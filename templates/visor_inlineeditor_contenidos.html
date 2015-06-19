@@ -1,0 +1,333 @@
+
+<script>
+
+//permisos
+
+function popup(id_elemento, tipo){
+       // esta funcion llama al popup y despues me retorna los
+       // datos de los grupos y usuarios con los que se ha compartido
+       var actual_compartido=[];
+       actual_compartido = extraer_array_compartido();
+      
+       console.dir(actual_compartido);
+       dialog.modificar_permisos(id_elemento, tipo, actual_compartido,  function(devcompartidos){
+           $.ajax({
+                type: 'POST',
+                url: "dlg_compartir.php",
+                data: {
+                    modo:"crear_html_compartido",
+                    id_elemento:id_elemento,
+                    tipo:tipo,
+                    compartidos:devcompartidos
+                },
+                dataType:"json",
+                success: function(data){
+                   // actualizar html
+                   $("#compartidocon").html(data);
+             }
+
+           });
+       
+   });
+   return false     
+}
+  
+  function extraer_array_compartido() {
+   var compartido=[];
+   $(".js-etiq").each(function(){
+           compartido.push ({id_elemento:$("input[name=id_usrgrp]",this).val(), tipo_elemento:$("input[name=tipo_usrgrp]",this).val()});
+       });
+    return compartido;    
+  }     
+  
+ function no_compartido(id_elemento,  nombre){
+       
+        cuadro_dialogo.si_no("No compartir..", "El documento ya no será compartido con "+nombre+". ¿Desea continuar?",
+        function(){
+               $("#etiqueta"+id_elemento).remove();
+               return true;
+        },
+        function(){
+            // no hay codigo
+            return false;
+        });
+       
+        return false;   
+    
+      
+  };
+  
+// fin permisos
+
+  function comprueba_campos() {
+        
+        var errores = 0;
+       
+        $(".js-textoerror").hide().removeClass("oculto");
+        if (!$("#categoriaseleccionada").val()){                
+            $("#error_validacion_carpeta").show();
+            errores++;
+            
+        }
+        
+        if( !$("#titulo").val()){                
+            $("#error_validacion_titulo").show();
+            errores++;
+        }
+        if(errores==0){
+           //devolvemos el array con los compartidos
+           var texto = JSON.stringify(extraer_array_compartido()) ;
+
+           console.log("visor_inlineeditor_contenidos.html:resultado_compartido:"+texto);
+           $("#resultado_compartido").val(texto);
+           return true;
+        }else{
+           return false;        
+        }        
+    }        
+
+
+
+
+
+function createUploader(newid){
+
+	var uploader = new qq.FileUploader({
+		element: document.getElementById(newid),
+		action: 'modcontenidos.php',
+		params: {modo:'subiendoficheronuevo',id_contenido:0,cat:'{ID_ACTUAL}'},
+		debug: false,
+		onSubmit: function(id, fileName){
+			$(".qq-upload-list").show();
+		},
+		onProgress: function(id,fileName){
+			$(".qq-upload-list").show();
+		},
+		onCancel: function(id, fileName){
+			$(".qq-upload-list").show();
+		},
+		onComplete: function(id, fileName, responseJSON){
+			if (responseJSON["error"])
+				return;
+
+			//$("#ficherosubido").html("<b>"+ fileName + "</b>");
+			$("#resultadofile").attr("href",'descargar.php?modo=imagen&path=' +responseJSON['localpath'] );
+			$("#resultadofile").html("Imagen: <u>"+  fileName + "</u>" );
+			
+			$(".qq-upload-list").hide('slow');
+
+			//$("#ficherosubido").val( responseJSON["localpath"] );
+
+		}
+	});
+
+	//$("#qq-upload-list").hide();
+}
+
+
+function onCarga(){
+
+	var config = {
+		toolbar:
+		[
+			['Bold', 'Italic', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink'],
+			['UIColor']
+		]
+	};
+	var config2 = {
+		toolbar:
+		[
+			['Bold','Italic','Underline','Strike'],
+			['NumberedList','BulletedList','-','Outdent','Indent'],
+			['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+			['Link','Unlink','Image','MyButton','Preview'],
+			'/',
+			['Print', 'SpellChecker', 'Scayt'],	
+			['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
+			'/',
+			['Format','Font','FontSize'],
+			['TextColor','BGColor']			
+		]
+	};
+
+
+	// Initialize the editor.
+	// Callback function can be passed and executed after full instance creation.
+	config.autoGrow_minHeight = 100;
+	config.autoGrow_maxHeight = 100;
+	config.height  = 100;
+	$('.jquery_ckeditor').ckeditor(config);
+
+	config2.autoGrow_minHeight = 300;
+	config2.height = 300;
+	//var editor = $('.jquery_ckeditor2').ckeditor(config2);
+
+	var editor = CKEDITOR.replace( 'jquery_ckeditor2',config2);
+
+	// Listen for the "pluginsLoaded" event, so we are sure that the
+	// "dialog" plugin has been loaded and we are able to do our
+	// customizations.
+	editor.on( 'pluginsLoaded', function( ev )
+		{
+			// If our custom dialog has not been registered, do that now.
+			if ( !CKEDITOR.dialog.exists( 'myDialog' ) )
+			{
+				// We need to do the following trick to find out the dialog
+				// definition file URL path. In the real world, you would simply
+				// point to an absolute path directly, like "/mydir/mydialog.js".
+
+				var href = document.location.href.split( '/' );
+				href.pop();
+				href.push( 'js/ckupload.js' );
+				href = href.join( '/' );
+
+				// Finally, register the dialog.
+				CKEDITOR.dialog.add( 'myDialog', href );
+			}
+
+			// Register the command used to open the dialog.
+			editor.addCommand( 'myDialogCmd', new CKEDITOR.dialogCommand( 'myDialog' ) );
+
+			// Add the a custom toolbar buttons, which fires the above
+			// command..
+			editor.ui.addButton( 'MyButton',
+				{
+					label : 'Subir imagen',
+					command : 'myDialogCmd'
+				} );
+		});
+
+
+};
+
+</script>
+
+	<style id="styles" type="text/css">
+
+		.cke_button_myDialogCmd .cke_icon
+		{
+			display: none !important;
+		}
+
+		.cke_button_myDialogCmd .cke_label
+		{
+			display: inline !important;
+		}
+
+		#resultadofile {
+			text-decoration: underline!important;
+		}
+
+
+.qq-upload-button {
+  border-top: 2px solid #ccc;
+  border-left: 2px solid #ccc;
+  border-bottom: 2px solid gray;
+  border-right: 2px solid gray;
+  padding:2px;
+  width: 200px;
+  background-color: #fefefe;
+  margin-bottom: 20px;
+}
+
+.qq-upload-list {
+  margin-left: 20px;
+}
+
+
+
+	</style>
+
+<h3 class="subtitulo subtitulo-sintabla"><patTemplate:var name="accion"  modifier="html8" /></h3>
+        
+<form method="post" action="modcontenidos.php">
+<input type="hidden" name="inline" value="1" />
+<input type="hidden" name="modo" value="{MODO}"   />
+<input type="hidden" name="cat" value="{ID_ACTUAL}"   />
+<input type="hidden" name="id_categoria" value ="<patTemplate:var name="id_categoria"  modifier="html8" />"/>
+<input type="hidden" name="id_contenido" value="{ID_CONTENIDO}"   />
+<input type="hidden" name="compartido" value="" id="resultado_compartido">
+
+<table width="700" class="editor-documentos">
+    
+<tr class="tabla-filauno">
+	<td class="tipo"><span>Carpeta</span></td>
+	<td>
+            <!-- <input style="width: 550px" name="nombre" class="nombre" type="text" value="<patTemplate:var name="categoria"  />"> !-->
+            <select name="categorias" id="categoriaseleccionada">
+                        <option value="">carpeta - subcarpeta</option>
+                        <patTemplate:var name="combocategoriashoja"  />
+                    </select>
+            <div id="error_validacion_carpeta" class="oculto  js-textoerror">
+                    Seleccione una carpeta
+            </div>
+            
+        </td>
+</tr>
+
+<tr>
+	<td class="tipo"><span>Título</span></td>
+	<td>
+            <input style="width: 550px" name="nombre_contenido" id="titulo" class="nombre" type="text" value="<patTemplate:var name="nombre_contenido"  />">
+            <div id="error_validacion_titulo" class="oculto  js-textoerror">
+                    Este campo es obligatorio
+            </div>
+        </td>
+</tr>
+
+<tr>
+	<td class="tipo"><span>Descripción</span></td>
+	<td><textarea rows="3" class="descripcion jquery_ckeditor" name="descripcion"><patTemplate:var name="descripcion" modified="html8" /></textarea></td>
+</tr>
+<tr>
+	<td class="tipo"><span>Contenido</span></td>
+	<td><textarea id="jquery_ckeditor2" rows="8" class="descripcion jquery_ckeditor2" name="articulo"><patTemplate:var name="articulo" modified="html8" /></textarea></td>
+</tr>
+<tr>
+    <td class="tipo">
+        <span>Compartido con:</span>                                            
+    </td> 
+    <td>
+        <input type="image" src="img/verde/compartir-grande.png" title="Etiquetas" class="enlinea" onclick="return popup('<patTemplate:var name="id_documento"  modifier="html8" />','0')"/>
+        <div class=grupo-etiquetas id="compartidocon">              
+            <patTemplate:var name="lista_permisos"/>
+        </div>
+    </td>
+          
+</tr>
+
+<tr>
+    <td></td>
+    <td>
+        <div  id="publicar-documento">
+            <input type="submit" value="Publicar documento" class="botonenviar boton-aceptar" onclick ="return comprueba_campos()"/>
+            <span class="cancelar-form"><input type="button" value="Cancelar"  class="botonenviar boton-cancelar" onclick="location.href='<patTemplate:var name="volver"/>'" /></span>
+        </div>
+    </td>   
+</tr>
+
+
+</table>
+
+</form>
+
+<patTemplate:tmpl name="popuppermisos" src="dlg_compartir.html" autoload="on" parse="off"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,26 @@
+
+<script>
+function texto_buscar(){
+    
+    var b = $("#buscartexto").val(); 
+    var hr = "location.href='modfiltrodocs.php";
+    if (b){
+        hr = hr + "?buscartexto="+b+"'";
+    }
+    $("#botonbuscar").attr("onclick", hr);
+    
+}
+</script>
+
+
+
+<form method="post" id="busqueda-menu" style="margin-top: 24px;" action="modbuscador.php">
+<input name="cat" value="{ID_ACTUAL}" type="hidden">
+<input id="buscartexto" name="buscartexto" value="Buscar" type="text" onchange="texto_buscar()" onfocus="if(this.value==this.defaultValue)this.value='';" onblur="if(this.value=='')this.value=this.defaultValue;" >
+<input id="botonbuscar" type="button" value="Cancelar" class="botonenviar2" onclick="location.href=">
+
+       <!--style="width: 134px;margin-right:0px;padding-right:0px"-->
+       <!--<input value="Buscar" class="botonenviar2" onfocus="if(this.value==this.defaultValue)this.value='';" onblur="if(this.value=='')this.value=this.defaultValue;">
+       <!--style="width: 44px;margin-left:-0px;padding-left:0px;color: gray;text-align:center" type="submit"-->
+  
+</form>

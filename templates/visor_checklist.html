@@ -1,0 +1,275 @@
+
+<script>
+
+    var Pagina = Pagina || [];
+
+    Pagina.valores = [];
+    Pagina.global_puntos = 0;
+
+    Pagina.addValor = function(id_valor_posible,tipo,id_pregunta,valor) {
+        Pagina.valores.push({id_valor_posible:id_valor_posible,tipo:tipo,id_pregunta:id_pregunta,valor:valor});
+    };
+
+    Pagina.id_listado = <patTemplate:var name="id_listado" default="0"/>;
+    Pagina.id_contenido  = <patTemplate:var name="id_contenido" default="0"/>;
+
+
+</script>
+
+<div id="formulario-preguntas" class="oculto">        
+<div class="grupos">
+<patTemplate:tmpl name="listadogrupos">
+    <!-- listando grupos (visor_checklist.html) -->
+    <div class="grupo js-grupo" data-id_grupo='<patTemplate:var name="id_grupo" modifier="html8"/>'>
+    <p class="nombre-grupo"><patTemplate:var name="grupo"  modifier="html8" /></p>
+
+    <div id='preguntas_<patTemplate:var name="id_grupo" modifier="html8"/>'></div>
+    </div>
+
+    <div class="js-autogen" data-funcion="genpreguntas_responder" data-modo="preguntasresponder" data-param0='<patTemplate:var name="id_grupo" modifier="html8"/>'></div>
+	<div class="mrg40"></div>
+    <!-- /listando grupos -->
+</patTemplate:tmpl>
+</div>
+
+<input id="boton_finalizar" type="button" value='Finalizar' class="btn-finalizar botonenviar boton-aceptar" onclick="Pagina.enviar_checklist()" />
+</div><!-- formulario-preguntas -->
+
+
+<div id="formulario-inicio-checklist">
+<p class="nombre-checklist">Checklist: <patTemplate:var name="nombre_checklist"  modifier="html8" /></p>
+<input  type="button" value='Empezar' class="btn-finalizar botonenviar boton-aceptar" onclick="Pagina.empezar_rellenar_checklist()" />
+</div>
+
+<script>
+
+    $(function(){
+
+        /* UI stuff */
+        Pagina.empezar_rellenar_checklist = function(){
+            $("#formulario-inicio-checklist").hide();
+            $("#formulario-preguntas").hide().removeClass("oculto");
+            $("#formulario-preguntas").show("slow");
+        };
+
+    });
+
+
+    $(function(){
+
+        Pagina.buscarValor = function(id_valor_posible){
+
+            var item_busca = false;
+            $.each(Pagina.valores, function( index, item ) {
+                if(item["id_valor_posible"]==id_valor_posible){
+                    item_busca = item;
+                }
+            });
+
+            return item_busca;
+        };
+
+        Pagina.buscarTipo = function(id_pregunta){
+
+            var tipo = 0;
+            $.each(Pagina.valores, function( index, item ) {
+                if(item["id_pregunta"]==id_pregunta){
+                    tipo = item["tipo"];
+                }
+            });
+
+            return tipo;
+        };
+
+        Pagina.aportePuntos = function(id_valor_posible){
+            var puntos = 0;
+            var valor = Pagina.buscarValor(id_valor_posible);
+            if(!valor) return 0;
+
+            puntos = valor["valor"];
+
+            return puntos;
+        };
+
+
+        Pagina.getDatosPregunta = function($pregunta){
+            var datos = {};
+
+            if($pregunta && $pregunta.length){
+                var id_pregunta = $pregunta.attr("data-id_pregunta");
+
+                var $texto = $(".pregunta",$pregunta);
+                var $radioseleccionado = $("input.js-radio[name=radio_"+id_pregunta+"]:checked");
+                var $checkbox_checked =  $("input.js-checks_"+id_pregunta+":checked");
+
+                var values = [];
+                $checkbox_checked.each(function() {
+                    values.push($(this).val());
+                });
+
+                datos["id_pregunta"] = id_pregunta;
+                datos["pregunta"] = $(".pregunta",$pregunta).text();
+                datos["respuesta_text"] = $texto.val();
+                datos["respuesta_radio"] = $radioseleccionado.val();
+                datos["respuesta_checkbox"] = values;
+                datos["tipo"] = Pagina.buscarTipo(id_pregunta)*1;
+
+                var puntos = 0;
+                var id_valor_posible = 0;
+                switch(datos["tipo"]){
+                    case Listas.TIPO_TEXTO:
+                        var id_valor_posible = $texto.attr("data-id_valor_posible");
+                        puntos = Pagina.aportePuntos(id_valor_posible);
+                        break;
+                    case Listas.TIPO_EXCLUSIVO:
+                        var id_valor_posible = $radioseleccionado.attr("data-id_valor_posible");
+                        puntos = Pagina.aportePuntos(id_valor_posible);
+                        break;
+                    case Listas.TIPO_MULTIPLE:
+                        $.each(values,function(index,id_valor_posible){
+                            //console.log("..sacando("+id_valor_posible+")");
+                            puntos = puntos + Pagina.aportePuntos(id_valor_posible);
+                        });
+                        break;
+                }
+                //console.log("ip["+id_pregunta+"]t["+datos["tipo"]+"]Aporte de puntos es:"+puntos);
+
+
+                Pagina.global_puntos = Pagina.global_puntos + puntos;
+
+                return {"valores":datos,"id_pregunta":id_pregunta,"puntos":puntos};
+            }
+
+            //console.log("se paso pregunta vacia; p:"+$pregunta+",pl:"+$pregunta.length);
+
+            return false;
+        };
+
+        Pagina.getDatosGrupo = function($grupo){
+
+            var $preguntas = $(".js-preguntas",$grupo);
+            var datos = [];
+
+            $preguntas.each(function(){
+                var id_pregunta = $(this).attr("data-id_pregunta");
+                //console.log("Encontro pregunta("+id_pregunta+")");
+
+                datos.push( {"datos":Pagina.getDatosPregunta($(this)),"id_pregunta":id_pregunta} );
+            });
+
+            return datos;
+        };
+
+        Pagina.getDatosGrupos = function($grupos){
+            var datos = [];
+            $grupos.each(function(){
+                var id_grupo = $(this).attr("data-id_grupo");
+                //console.log("Encontro grupo("+id_grupo+")");
+
+                datos.push( {"grupo":Pagina.getDatosGrupo(this),"id_grupo":id_grupo} );
+            });
+
+            return {"grupos":datos};
+        };
+
+        Pagina.enviar_checklist = function(){
+            var $grupos = $(".js-grupo",$("#formulario-preguntas"));
+
+
+            Pagina.global_puntos = 0;
+
+            var datos = Pagina.getDatosGrupos($grupos);
+
+            Pagina.datos_enviar = {"id_contenido":Pagina.id_contenido,"id_listado":Pagina.id_listado,"checklist":datos,"puntos":Pagina.global_puntos};
+
+            //console.dir(datos);
+            if(1)
+                Pagina.transmogrifi();
+
+            if(1)
+            $.ajax({
+                type: 'POST',
+                url: "ajax.php",
+                data: {
+                    modo:"guardar_checklist_relleno",
+                    id_listado: Pagina.id_listado,
+                    id_contenido: Pagina.id_contenido,
+                    puntos: Pagina.global_puntos,
+                    json_data: JSON.stringify(Pagina.datos_enviar),
+                    html_checklist: Pagina.html_enviar
+                },
+                dataType:"json",
+                success: function(data){
+                    if (!data || !data["ok"]){
+                        return;
+                    }
+
+                    var id_contenido = data.id_contenido;
+
+                    document.location = "modvisor.php?id_contenido="+id_contenido;
+                }
+            });
+        };
+
+
+        Listas.autoLoad();
+    });
+
+    $(function(){
+
+        Pagina.transmogrifi = function(){
+
+            var $form = $("#formulario-preguntas");
+
+            $("input.js-radio",$form).each(function(){
+
+                if($(this).is(':checked'))
+                    var $check = $("<span>✔</span>");
+                else
+                    var $check = $("<span>☐</span>");
+
+                $check.insertBefore(this);
+
+                $(this).remove();
+            });
+
+            $("textarea.js-dato-texto",$form).each(function(){
+                var texto = $(this).val();
+                var $check = $("<div class='textarea-texto'>"+html(texto)+"</span>");
+
+                $check.insertBefore(this);
+
+                $(this).remove();
+            });
+
+            $("input.js-checkbox",$form).each(function(){
+                if($(this).is(':checked'))
+                    var $check = $("<span>✔</span>");
+                else
+                    var $check = $("<span>☐</span>");
+
+                $check.insertBefore(this);
+
+                $(this).remove();
+            });
+
+            $("#boton_finalizar").hide().addClass("oculto");
+
+            if(0) $(".oculto",$form).remove();
+            Pagina.html_enviar = $("#formulario-preguntas").html();
+            $("#boton_finalizar").show().removeClass("oculto");
+
+        };
+        /*
+         U+237B ⍻ not check mark
+         U+2610 ☐ ballot box
+         U+2611 ☑ ballot box with check
+         U+2705 ✅ white heavy check mark
+         U+2713 ✓ check mark
+         U+2714 ✔ heavy check mark
+         */
+
+    });
+
+
+</script>

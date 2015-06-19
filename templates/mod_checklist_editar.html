@@ -1,0 +1,182 @@
+
+
+<style id="styles" type="text/css">
+
+    .cke_button_myDialogCmd .cke_icon
+    {
+        display: none !important;
+    }
+
+    .cke_button_myDialogCmd .cke_label
+    {
+        display: inline !important;
+    }
+
+    #resultadofile {
+        text-decoration: underline!important;
+    }
+
+
+    .qq-upload-button {
+      border-top: 2px solid #ccc;
+      border-left: 2px solid #ccc;
+      border-bottom: 2px solid gray;
+      border-right: 2px solid gray;
+      padding:2px;
+      width: 200px;
+      background-color: #fefefe;
+      margin-bottom: 20px;
+    }
+
+    .qq-upload-list {
+      margin-left: 20px;
+    }
+
+
+    #trgroup_0 {
+        display: none;
+    }
+
+    .trgroup_0 {
+        display: none;
+    }
+
+
+</style>
+
+
+<h3 class="subtitulo subtitulo-sintabla"><patTemplate:var name="accion"  modifier="html8" /></h3>        
+<form method="post" action="modchecklist.php">
+    
+    <input type="hidden" name="modo" value="{MODO}"   />
+    <input type="hidden" name="id_categoria" value ="<patTemplate:var name="id_categoria"  modifier="html8" />"/>
+    <input type="hidden" name="id_listado" value="<patTemplate:var name="id_listado"  modifier="html8" />"/>
+    <input type="hidden" name="id_padre" value ="<patTemplate:var name="id_padre"  modifier="html8" />"/>
+    <input type="hidden" name="id_tipo" value="<patTemplate:var name="id_tipo"  modifier="html8" />"/>
+    <input type="hidden" name="id_contenido" value="<patTemplate:var name="id_contenido"  modifier="html8" />"/>
+    <input type="hidden" name="compartido" value="" id="resultado_compartido">
+    <table width="900" class="editor-documentos">
+    
+    <tr class="tabla-filauno">
+	<td class="tipo"><span>Carpeta del checklist</span></td>
+	    <td>
+            <!-- <input style="width: 550px" name="nombre" class="nombre" type="text" value="<patTemplate:var name="categoria"  />"> !-->
+            <select name="categorias" id="categoriaseleccionada">
+                        <option value="">carpeta - subcarpeta</option>
+                        <patTemplate:var name="combocategoriashoja"/>
+                    </select>
+            <div id="error_validacion_carpeta" class="oculto  js-textoerror">
+                    Seleccione una carpeta
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="tipo"><span>Carpeta para resultados</span></td>
+        <td>
+            <!-- <input style="width: 550px" name="nombre" class="nombre" type="text" value="<patTemplate:var name="categoria"  />"> !-->
+            <select name="categorias_res" id="categoriaseleccionada_res">
+                <option value="">carpeta - subcarpeta</option>
+                <patTemplate:var name="combocategoriashoja_res"/>
+            </select>
+            <div id="error_validacion_carpeta_res" class="oculto  js-textoerror">
+                Seleccione una carpeta
+            </div>
+        </td>
+     </tr>
+
+    <tr>
+	    <td class="tipo"><span>Nombre checklist</span></td>
+	    <td>
+            <input style="width: 550px" name="listado" id="titulo" class="nombre" type="text" value="<patTemplate:var name="listado"  />">
+            <div id="error_validacion_titulo" class="oculto  js-textoerror">
+                    Este campo es obligatorio
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+	    <td class="tipo"><span>Descripción</span></td>
+	    <td><textarea rows="3" class="descripcion jquery_ckeditor" name="descripcion"><patTemplate:var name="descripcion" modified="html8" /></textarea></td>
+    </tr>
+    <tr>
+        <td class="tipo">
+            <span>Compartido con:</span>
+        </td>
+        <td>
+            <input type="image" src="img/verde/compartir-grande.png" title="Etiquetas" class="enlinea" onclick="return popup('<patTemplate:var name="id_documento"  modifier="html8" />','0')"/>
+            <div class=grupo-etiquetas id="compartidocon">
+                <patTemplate:var name="lista_permisos"/>
+            </div>
+        </td>
+    </tr>
+
+
+        <tr>
+            <td class="tipo"><span>Puntuación minima conformidad</span></td>
+            <td>
+                <input name="umbral_conformidad"  class="umbral_conformidad" type="text" value="<patTemplate:var name="umbral_conformidad" default="0"/>">
+            </td>
+        </tr>
+
+    <tr>
+        <td></td>
+        <td>
+            <div  id="publicar-documento">
+                <input type="submit" value="Publicar documento" class="botonenviar boton-aceptar" onclick ="return comprueba_campos()"/>
+                <span class="cancelar-form"><input type="button" value="Cancelar"  class="botonenviar boton-cancelar" onclick="location.href='<patTemplate:var name="volver"/>'" /></span>
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan ="2">
+        </td>
+    </tr>
+    <tr>
+	    <td colspan="2">
+            <hr>
+            <script>Listas.id_listado=<patTemplate:var name="id_listado"  default="0"/>;</script>
+
+            <table width="100%" id="listado_grupos">
+                <tbody>
+                <tr class="oculto"> 
+                    <td class='<patTemplate:var name="nohayeltos"  modifier="html8" />' colspan="3"> No hay grupos.</td>
+                </tr>
+                <patTemplate:tmpl src="modcheclist_filagrupo.html" />
+                </tbody>
+            </table>
+
+             <hr>
+            <input type ="button" class="boton-generico" value="Añadir grupo"  onclick="Listas.crearGrupo()"/>
+        </td>
+    </tr>
+</table>
+</form>
+
+<script>
+
+    $(function(){
+        //carga contenidos autogenerados
+        Listas.autoLoad();
+    });
+
+
+    //Evitar que enter lance el formulario porque si
+    $(document).ready(function() {
+        $(window).keydown(function(event){
+            if(event.keyCode == 13) {
+                event.preventDefault();
+                return false;
+            }
+        });
+    });
+
+</script>
+
+<patTemplate:tmpl name="popuppermisos" src="dlg_compartir.html" autoload="on" parse="off"/>
+
+
+
+          
+

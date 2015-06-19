@@ -1,0 +1,291 @@
+
+<style>
+
+    .ui-dialog{
+        text-align: left;
+    }
+    
+    textarea.formula {
+      border:1px solid #999999;
+      font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
+      font-size: 14px;
+      line-height: 2;
+    }
+
+</style> 
+<script>
+function togglea_grupo(idgrupo){
+    
+    var eliminar = $("#idgrupo"+idgrupo).is(':checked') ;
+    if (!eliminar){
+        // eliminamos el grupo del ususario
+        $.ajax({
+            type: 'POST',
+                url: "modusuarios.php",
+               data: {
+                   modo:"eliminar_usuario_del_grupo",
+                   idgrupo:idgrupo,
+                   idusuario:$("#idusuariogrupo").val()
+               }
+         });
+    
+    } else{
+        // incluimos al usuario en el grupo
+         $.ajax({
+             type:'POST',
+             url: "modusuarios.php",
+             data:{
+                 modo:"agnadir_usuario_al_grupo",
+                 idgrupo:idgrupo,
+                 idusuario:$("#idusuariogrupo").val()
+             }
+         });
+    }
+}
+    
+function recarga_grupos_listados(idusuario)    {
+  //actualizo los grupos a los que pertenece el usuario en el listado de usuarios  
+  $.ajax({
+      type: 'POST',
+      url: "modusuarios.php",
+          data: {
+              modo:"recargar_grupos_listados",
+              idusuariogrupos:idusuario
+          },
+          dataType:"json",
+          success: function(data){
+            agnade_grupos_listado(data,idusuario);
+                   
+                },
+                error: function(){
+                   var i = 1 
+                }
+    });
+}
+
+function agnade_grupos_listado(datos,usuario){
+ 
+    if (datos.error){
+        
+      return
+    }
+    
+     $("#htmlusuariogrupo"+usuario).html("");
+     //esto es lo que debe construir esta function 
+     //<div class=etiqueta-grupo id=etiqueta23>
+     //    <input type='image' src='img/etiqueta-x.png' title='Eliminar Grupo' onclick='eliminar_del_grupo(23,"Grupo 2")'/>
+     //    <span>Grupo 2</span>
+     //</div>
+    datos.lineas.forEach(function(item){
+       var $div = $(document.createElement("div"));    
+       // añado input
+       var $linea  = $(document.createElement("input"));
+       $linea.attr("type","image");
+       $linea.attr("src", "img/etiqueta-x.png");
+       $linea.attr("title","Eliminar del Grupo");
+       $linea.click(function(){
+          eliminar_del_grupo(item.idgruposelementos,item.nombregrupo)   
+       });
+       $div.append($linea);
+       // añado span
+       var $sp = $(document.createElement("span"));
+       $sp.html(item.nombregrupo)
+       $div.append($sp);
+       // atributos del div
+       $div.addClass("etiqueta-grupo");
+       $div.attr("id", "etiqueta"+item.idgruposelementos);
+       // lo añadimos al div inicial
+        $("#htmlusuariogrupo"+usuario).append($div);
+    });
+}
+
+
+function actualizar_grupo(idgrupo)  {
+   
+    $.ajax({
+        type: 'POST',
+        url: "modusuarios.php",
+        data: {
+                modo:"actualizar_grupo",
+                idgrupo:idgrupo,
+                nombregrupo: $("#idediciongrupo"+idgrupo).val()
+                },
+                dataType:"json",
+                success: function(){
+                   $("#idetiquetagrupo"+idgrupo).html($("#idediciongrupo"+idgrupo).val()); 
+                  
+                }
+    });
+ }
+ 
+ 
+function salir_grupos(){
+    recarga_grupos_listados($("#idusuariogrupo").val());
+    fin_editar_grupos();
+    $("#popupgrupos").dialog("close");
+    
+}    
+function editar_grupos(){
+  $(".js-finedicion").removeClass("oculto").show();  
+  $(".js-edicion").hide();  
+  $("#nuevogrupo").addClass("ocultar-edicion");
+  $("#gruposexistentes").addClass("sin-cebra")
+}
+
+function fin_editar_grupos(){
+  $(".js-finedicion").hide();  
+  $(".js-edicion").show();
+  $("#nuevogrupo").removeClass("ocultar-edicion");
+}
+
+function crear_grupo(){
+    if ($("#agnadenuevogrupo").val()== "Nuevo grupo" || $("#agnadenuevogrupo").val()== "" ){
+        $("#error_creacion_grupo").removeClass("oculto").show();  
+        $("#error_creacion_grupo").html("           Debe introducir una descripcion")
+        return false
+        // no hay grupo que crear
+    }
+    $.ajax({
+        type: 'POST',
+        url: "modusuarios.php",
+        data: {
+                modo:"crear_grupo",
+                nombregrupo: $("#agnadenuevogrupo").val()
+                },
+                dataType:"json",
+                success: function(resultado){
+                  // grupo creado
+                  if (!resultado){
+                      $("#error_creacion_grupo").removeClass("oculto").show();
+                      $("#error_creacion_grupo").html("           Ya existe el grupo indicado")
+                  }else{
+                    return true;
+                    $("#error_creacion_grupo").hide();
+                    
+                  }
+                  $("#agnadenuevogrupo").val("Nuevo grupo");
+                  
+                }
+    
+    });
+    // recargamos todo el html de los grupos
+     $.ajax({
+                type: 'POST',
+                url: "modusuarios.php",
+               data: {
+                   modo:"cargar_grupos",
+                   idusuariogrupos:$("#idusuariogrupo").val(),
+                   filtro:filtro_buscar_grupo()
+                    },
+                dataType:"json",
+                success: function(data){
+                   ver_grupos(data);
+                   editar_grupos();
+                   $("#agnadenuevogrupo").val("Nuevo grupo");
+                },
+                error: function(){
+                   var i = 1 
+                }
+                
+    });
+     
+    
+}
+function togglea_borrado(idgrupo){
+  //sacamos o escondemos el boton de eliminar
+  //en ambos casos hacemos invisible todos para que
+  //no se nos quede ningun boton de más
+  if ($("#bborraridgrupo"+idgrupo).is(':visible')){
+      
+      $(".js-bborrar").hide();
+      $("#bborraridgrupo"+idgrupo).hide();
+    
+  }else{
+      
+      $(".js-bborrar").hide();
+      $("#bborraridgrupo"+idgrupo).removeClass("oculto");
+      $("#bborraridgrupo"+idgrupo).show();
+  }
+
+
+}
+function borrar_grupo(idgrupo){
+ 
+ $.ajax({
+        type: 'POST',
+        url: "modusuarios.php",
+        data: {
+               modo:"borrar_grupo",
+                idgrupo: idgrupo
+                },
+                dataType:"json",
+                success: function(){
+                   $("#li"+idgrupo).remove();
+                }
+    
+    });
+}
+
+function eliminar_errores(){
+  // elimina los textos de error 
+  $(".js-textoerror").hide();
+  
+}
+
+function buscar_grupo(){
+    // recargamos todo el html de los grupos
+     $.ajax({
+                type: 'POST',
+                url: "modusuarios.php",
+               data: {
+                   modo:"cargar_grupos",
+                   idusuariogrupos:$("#idusuariogrupo").val(),
+                   filtro:filtro_buscar_grupo()
+                    },
+                dataType:"json",
+                success: function(data){
+                   ver_grupos(data);
+                   if($("#editandogrupos").is(':visible')){
+                     editar_grupos();
+                   }  
+                   
+                },
+                error: function(){
+                   var i = 1 
+                }
+                
+    });
+    
+}
+
+
+
+</script>
+
+<div id="popupgrupos" title="" class="oculto">
+    <input type="hidden" name ="usuario" id="idusuariogrupo" value =""/>
+    <div class="paquete-busqueda">
+        <input type="text" value="Buscar" id="buscargrupo" onfocus="if(this.value==this.defaultValue)this.value='';" onblur="if(this.value=='')this.value=this.defaultValue;"> 
+        <input type="button" value="Buscar" class="botonenviar2" onclick="buscar_grupo()"/>
+    </div>
+     <div class="js-finedicion oculto"></div>
+        <div class="contenedor-ocultar"  id="nuevogrupo">
+           <input type="text" id="agnadenuevogrupo" value="Nuevo grupo" onfocus="if(this.value==this.defaultValue)this.value='';" onblur="if(this.value=='')this.value=this.defaultValue;" onkeyup="return eliminar_errores()"> 
+           <input type="button" value="Añadir" class="boton-aceptar" onclick="return crear_grupo()"/>
+           <div id="error_creacion_grupo" class="oculto  js-textoerror">
+                    Este campo es obligatorio
+           </div>
+        </div> 
+    
+
+
+  <ul id="gruposexistentes" class="js-grupos">
+      
+  </ul>
+    
+    <div class="clear botones-grupobox">
+        <input type="button" name="editar_grupos" title ="Edición de grupos" value ="Editar" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-button-text js-edicion" onclick="return editar_grupos()">
+        <input type="button" name="fin_editar_grupos" title ="Fin edición" value ="Ok" id ="editandogrupos" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-button-text js-finedicion oculto" onclick="return fin_editar_grupos()">
+        <input type="button" name="salir_grupos" title ="Abandonar grupos" value ="Salir" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-button-text" onclick="return salir_grupos()">
+    </div>
+</div>

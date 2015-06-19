@@ -1,0 +1,48 @@
+<script>
+function cierro_sesion(){
+     cuadro_dialogo.si_no("Cerrando sesión...", "Se va a cerrar la sesión.<br>¿Desea continuar?",
+	 function(){
+             
+              document.location ="logout.php"
+          },
+            function(){
+            
+              return false;
+            });
+            return false;
+	   
+}
+
+</script>
+
+<div class="headbar">
+
+<div class="logo">
+    <h1>Servicios DPI
+	<a href="cat.php?cat=0" title="Servicios DPI">Hola</a>
+    </h1>    
+</div>
+
+   
+<div class="portalanagrama">
+<a href="cat.php?cat=0" title="QualiDocs" alt="QualiDocs" class="navega"><img border="0" src="theme/9-docs.png"></a>
+</div>
+
+
+<DIV id="cajausuario">
+<TABLE id="tablausuario" cellSpacing="0" cellPadding="0" width="100%" border="0">
+  <TBODY>
+  <TR>
+    <TD style="HEIGHT: 19px" colSpan="2" class="fecha" id="cajafecha">2010</TD>
+    <td id="username"><patTemplate:var name="usuario_logueado" modifier="html8"/></td>
+    <td id="logout"><a class="enlacemenu cerrar-sesion" onclick="return cierro_sesion()">Cerrar sesión</a></td>
+  </TR>
+
+  </TBODY>
+  </TABLE>
+</DIV>
+
+    
+
+
+</div>

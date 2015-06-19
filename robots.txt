@@ -1,0 +1,5 @@
+
+# Esta pagina es privada, no indexar contenidos
+
+User-agent: *
+Disallow: /

@@ -1,0 +1,28 @@
+<script>
+    $(function(){
+        var opt = "<patTemplate:var name="combocategoriashoja" modifier="html8" />";
+        console.log("opt"+opt);
+        $(opt).wrap('<select />');
+        $("#categorias").html(opt);
+    });
+    
+</script>
+
+<div id="popupcategorias" title="" class="oculto">
+    <div class="paquete-busqueda">
+        <input type="text" value="Buscar" id="buscargrupo" onfocus="if(this.value==this.defaultValue)this.value='';" onblur="if(this.value=='')this.value=this.defaultValue;"> 
+        <input type="button" value="Buscar" class="botonenviar2" onclick="buscar_grupo()"/>
+    </div>
+    <span>Categorias:</span>
+    <div id="categorias" name="categorias">
+        
+    </div>     
+
+
+
+    <ul id="grp_usr_existentes" class="js-grupos">
+
+    </ul>
+
+
+</div>

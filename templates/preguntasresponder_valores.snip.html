@@ -1,0 +1,38 @@
+
+<patTemplate:tmpl name="listadovalores">
+<!-- preguntasresponder_valores.snip.html -->
+    <div class="valores {CSS_FILA} js-pregunta_{ID_PREGUNTA}" data-id_pregunta="{ID_PREGUNTA}">
+        <!-- IDV:{ID_VALOR_POSIBLE} -->
+
+        <script>Pagina.addValor(
+                        <patTemplate:var name="id_valor_posible" default="0"/>,
+                        <patTemplate:var name="tipo" default="0"/>,
+                        <patTemplate:var name="id_pregunta" default="0"/>,
+                        <patTemplate:var name="valor" default="0"/>
+
+        );</script>
+
+        <p class="ui-texto {CSS_TEXTO}"><textarea
+            data-id_valor_posible="{ID_VALOR_POSIBLE}"
+            class="js-dato-texto"
+            placeholder="..."
+            name="{CSS_TEXTO}text_{ID_PREGUNTA}"
+            ></textarea>
+        </p>
+        <p class="ui-checkbox {CSS_CHECKBOX}"><input
+            data-id_valor_posible="{ID_VALOR_POSIBLE}"
+            type="checkbox"
+            name="{CSS_CHECKBOX}check_{ID_VALOR_POSIBLE}"
+            value="{ID_VALOR_POSIBLE}"
+            class="js-checks_{ID_PREGUNTA} js-checkbox">
+        </p>
+        <p class="ui-radio {CSS_RADIO}"><input type="radio"
+            data-id_valor_posible="{ID_VALOR_POSIBLE}"
+            name="{CSS_RADIO}radio_{ID_PREGUNTA}"
+            class="js-radio"
+            value="{ID_VALOR_POSIBLE}">
+        </p>
+        <label class="valor-texto"><patTemplate:var name="texto" modifier="html8"/></label>
+    </div>
+<!-- /preguntasresponder_valores.snip.html -->
+</patTemplate:tmpl>

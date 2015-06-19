@@ -1,0 +1,123 @@
+
+
+<h3 class="subtitulo subtitulo-sintabla"><patTemplate:var name="accion"  modifier="html8" /></h3>
+<form method="post" action="modopendata.php">
+
+    <input type="hidden" name="modo" value="{MODO}"   />
+    <input type="hidden" name="id_categoria" value ="<patTemplate:var name="id_categoria"  modifier="html8" />"/>
+    <input type="hidden" name="id_listado" value="<patTemplate:var name="id_listado"  modifier="html8" />"/>
+    <input type="hidden" name="id_padre" value ="<patTemplate:var name="id_padre"  modifier="html8" />"/>
+    <input type="hidden" name="id_tipo" value="<patTemplate:var name="id_tipo"  modifier="html8" />"/>
+    <input type="hidden" name="id_contenido" value="<patTemplate:var name="id_contenido"  modifier="html8" />"/>
+    <input type="hidden" name="compartido" value="" id="resultado_compartido">
+    <table width="900" class="editor-documentos">
+
+        <tr class="tabla-filauno">
+            <td class="tipo"><span>Carpeta</span></td>
+            <td>
+                <!-- <input style="width: 550px" name="nombre" class="nombre" type="text" value="<patTemplate:var name="categoria"  />"> !-->
+                <select name="categorias" id="categoriaseleccionada">
+                    <option value="">carpeta - subcarpeta</option>
+                    <patTemplate:var name="combocategoriashoja"/>
+                </select>
+                <div id="error_validacion_carpeta" class="oculto  js-textoerror">
+                    Seleccione una carpeta
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="tipo"><span>Nombre canal opendata</span></td>
+            <td>
+                <input style="width: 550px" name="listado" id="titulo" class="nombre" type="text" value='<patTemplate:var name="listado"  />'>
+                <div id="error_validacion_titulo" class="oculto  js-textoerror">
+                    Este campo es obligatorio
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="tipo"><span>Url canal (rss)</span><span>(por ejemplo: http://news.yahoo.com/rss/tech)</span></td>
+            <td>
+                <input placeholder="http://.." style="width: 550px" name="url" id="url" class="nombre" type="text" value='<patTemplate:var name="url"  />'>
+                <div id="error_validacion_canal" class="oculto  js-textoerror">
+                    Este campo es obligatorio
+                </div>
+            </td>
+        </tr>
+
+
+        <tr>
+            <td class="tipo"><span>Descripción</span></td>
+            <td><textarea rows="3" class="descripcion jquery_ckeditor" name="descripcion"><patTemplate:var name="descripcion" modified="html8" /></textarea></td>
+        </tr>
+        <tr>
+            <td class="tipo">
+                <span>Compartido con:</span>
+            </td>
+            <td>
+                <input type="image" src="img/verde/compartir-grande.png" title="Etiquetas" class="enlinea" onclick="return popup('<patTemplate:var name="id_documento"  modifier="html8" />','0')"/>
+                <div class=grupo-etiquetas id="compartidocon">
+                    <patTemplate:var name="lista_permisos"/>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <div  id="publicar-documento">
+                    <input type="submit" value="Publicar documento" class="botonenviar boton-aceptar" onclick ="return comprueba_campos()"/>
+                    <span class="cancelar-form"><input type="button" value="Cancelar"  class="botonenviar boton-cancelar" onclick="location.href='<patTemplate:var name="volver"/>'" /></span>
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan ="2">
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <hr>
+
+                <h3><patTemplate:var name="titulo_remoto" modifier="html8"/></h3>
+
+                <ul>
+                    <h2>Mostrando canal</h2>
+                    <patTemplate:tmpl name="listadorss">
+                    <li><h3><a href='<patTemplate:var name="link" modifier="html8"/>'><patTemplate:var name="title" modifier="html8"/></h3></a>
+                    <p><patTemplate:var name="description"/></p>
+                    </li>
+                    <li><hr/></li>
+                    </patTemplate:tmpl>
+                </ul>
+
+
+                <hr>
+
+            </td>
+        </tr>
+    </table>
+</form>
+
+<script>
+
+
+    //Evitar que enter lance el formulario porque si
+    $(document).ready(function() {
+        $(window).keydown(function(event){
+            if(event.keyCode == 13) {
+                event.preventDefault();
+                return false;
+            }
+        });
+    });
+
+</script>
+
+<patTemplate:tmpl name="popuppermisos" src="dlg_compartir.html" autoload="on" parse="off"/>
+
+
+
+
+

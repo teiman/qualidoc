@@ -1,0 +1,38 @@
+.cke_button_myDialogCmd .cke_icon
+{
+    display: none !important;
+}
+
+.cke_button_myDialogCmd .cke_label
+{
+    display: inline !important;
+}
+
+#resultadofile {
+    text-decoration: underline!important;
+}
+
+
+.qq-upload-button {
+    border-top: 2px solid #ccc;
+    border-left: 2px solid #ccc;
+    border-bottom: 2px solid gray;
+    border-right: 2px solid gray;
+    padding:2px;
+    width: 200px;
+    background-color: #fefefe;
+    margin-bottom: 20px;
+}
+
+.qq-upload-list {
+    margin-left: 20px;
+}
+
+
+#trgroup_0 {
+    display: none;
+}
+
+.trgroup_0 {
+    display: none;
+}

@@ -1,0 +1,225 @@
+<script>
+
+    var dialog = dialog || {};
+
+    /**
+     *
+     */
+    dialog.modificar_permisos = function(id_elemento, tipo, actual_compartido, on_comparte) {
+        dialog.on_compartir = on_comparte;
+
+        // cargamos los grupos y usuarios con los que hay que compartir
+        $.ajax({
+            type: 'POST',
+            url: "dlg_compartir.php",
+            data: {
+                modo:"cargar_grupos",
+                id_elemento:id_elemento,
+                tipo:tipo,
+                actual_compartido:actual_compartido,
+                filtro:filtro_buscar_grupo()
+            },
+            dataType:"json",
+            success: function(data){
+                ver_grp_usr(data);
+                dialog.compartidos = data.compartidos;
+                //abrimos el cuadro de dialogo     
+                cuadro_dialogo.popup_grp_usr({
+                    titulo:"Seleccion de grupos/usuarios",
+                    puedo_borrar_formula:false 
+                }, function(){
+                    dialog.on_compartir(dialog.compartidos);
+                });
+                   
+            }
+        });
+  
+    };
+
+    /**
+     *
+     */
+    dialog.actualizar_permisos_en_tabla = function(id_elemento,tipo,compartidos,on_actualiza){
+        dialog.on_actualizar = on_actualiza;
+        $ajax({
+            type: 'POST',
+            url: "dlg_compartir.php",
+            data: {
+                modo:"actualizar_compartidos_en_tablas",
+                id_elemento:id_elemento,
+                tipo:tipo,
+                compartidos:compartidos
+            },
+            dataType:"json"
+     
+        });
+    };
+
+
+    /**
+     *
+     * @param datos
+     */
+    function ver_grp_usr(datos){
+        // construye la parte de html para poder agnadir, quitar usuarios grupos, editar grupos o eliminarlos
+        $("#grp_usr_existentes").html("");
+        if (datos.error){
+            return
+        }
+    
+        datos.lineas.forEach(function(item){
+                        
+            // contenedor
+            var $li = $(document.createElement("li")); 
+            // input
+            var $linea  = $(document.createElement("input"));
+            $linea.attr("type","checkbox");
+            $linea.addClass("js-edicion");
+
+            if (item.compartido){
+                $linea.attr("checked", item.compartido);
+            }
+
+            $linea.attr("value", item.id_elemento);
+            $linea.attr("name", "id_elemento");
+            $linea.attr("id", "id_elemento"+item.id_elemento+"tipo"+item.tipousuario)
+
+            $linea.click(function(){
+                togglea_grupo(item.id_elemento, item.tipousuario)   
+            });
+
+            $li.append($linea);
+
+            // texto 
+            var $sp = $(document.createElement("span"));
+            $sp.html(item.nombre);
+            $sp.attr("id","idnombre"+item.id_elemento);
+            $sp.addClass("js-edicion");
+
+            if (item.tipousuario == 0){
+              $sp.addClass("js-usuario");
+            }else{
+              $sp.addClass("js-grupo");  
+            }
+            
+            $li.append($sp);
+            $li.attr("id", "li"+item.id_elemento);
+         
+            $("#grp_usr_existentes").append($li);
+         
+        });
+    }
+
+
+
+    function filtro_buscar_grupo(){
+        var buscar = $("#buscargrupo").val();
+        if (buscar == "Buscar"){
+            buscar = "";
+        }  
+        return buscar;
+    }
+</script>
+
+<style>
+
+    .ui-dialog{
+        text-align: left;
+    }
+
+    textarea.formula {ver_grupos
+                      border:1px solid #999999;
+                      font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
+                      font-size: 14px;
+                      line-height: 2;
+    }
+
+</style> 
+
+<script>
+
+    /**
+     *
+     * @param id_elemento
+     * @param tipo
+     */
+    function togglea_grupo(id_elemento, tipo){
+        var nuevos= [];
+        var eliminar = $("#id_elemento"+id_elemento+"tipo"+tipo).is(':checked') ;
+        if (!eliminar){
+            // eliminamos de la lista de activos
+            
+            dialog.compartidos.forEach(function(elemento){
+               if (!(elemento.id_elemento== id_elemento && elemento.tipo_elemento == tipo)){
+                    nuevos.push({id_elemento:elemento.id_elemento,tipo_elemento:elemento.tipo_elemento});
+                }
+            });
+            
+            dialog.compartidos = nuevos;
+            console.dir(dialog.compartidos);
+            
+             
+        } else{
+            // incluimos en la lista de activos
+        
+            dialog.compartidos.push({id_elemento:id_elemento,tipo_elemento:tipo});
+            
+        }
+    }
+
+
+    /**
+     *
+     * @param guardar
+     */
+    function salir_permisos(guardar){
+        if (guardar){
+            //devolvemos la lista con los usuarios y grupos seleccionados
+            dialog.on_compartir(dialog.compartidos);
+        }
+
+        $("#popuppermisos").dialog("close");
+    }
+
+
+    /**
+     *
+     */
+    function buscar_grp_usr(){
+        // recargamos todo el html de los grupos
+        $.ajax({
+            type: 'POST',
+            url: "dlg_compartir.php",
+            data: {
+                modo:"cargar_grupos",
+                idusuariogrupos:$("#idusuariogrupo").val(),
+                filtro:filtro_buscar_grupo()
+            },
+            dataType:"json",
+            success: function(data){
+                ver_grp_usr(data);
+            }
+        });
+    
+    }
+
+
+</script>
+
+
+<div id="popuppermisos" title="" class="oculto">
+    <input type="hidden" name ="usuario" id="idusuariogrupo" value =""/>
+    <div class="paquete-busqueda">
+        <input type="text" value="Buscar" id="buscargrupo" onfocus="if(this.value==this.defaultValue)this.value='';" onblur="if(this.value=='')this.value=this.defaultValue;"> 
+        <input type="button" value="Buscar" class="botonenviar2" onclick="buscar_grupo()"/>
+    </div>
+
+
+
+
+    <ul id="grp_usr_existentes" class="js-grupos">
+
+    </ul>
+
+
+</div>

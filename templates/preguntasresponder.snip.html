@@ -1,0 +1,14 @@
+
+
+<patTemplate:tmpl name="listadopreguntas">
+<!-- preguntasresponder.snip.html -->
+<div class="preguntas js-preguntas" data-id_pregunta="{ID_PREGUNTA}">
+    <!-- IDP:{ID_PREGUNTA}-->
+    <p class="pregunta"><patTemplate:var name="pregunta" modifier="html8"/></p>
+    <p class="explicacion"><patTemplate:var name="comentario" /></p>
+    <div id="caja_valores_{ID_PREGUNTA}" class="caja-valores"> </div>
+    <div class="js-autogen" data-funcion="genpreguntas_valores" data-modo="preguntasresponder_valores" data-param0='<patTemplate:var name="id_pregunta" modifier="html8"/>'></div>
+</div>
+<!-- /preguntasresponder.snip.html -->
+
+</patTemplate:tmpl>

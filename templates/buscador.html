@@ -1,0 +1,96 @@
+
+
+
+<style>
+
+.cajas {
+		display: none;
+}
+
+.cajabuscarstandalone th {
+	color: #50606d;
+	background-color: #CDD2D8;
+	font-size: 11px;
+	font-weight: bold;
+	font-family: "Trebuchet MS",Arial,Helvetica,sans-serif;
+
+	padding-left: 5px;
+	text-transform: uppercase;
+}
+
+.cajabuscarstandalone td {
+	border-left: 1px solid #A5AFB8;
+	border-right: 1px solid #A5AFB8;
+	border-top: 1px solid #A5AFB8;
+	padding-bottom:2px;
+	padding-top: 2px;
+
+	text-align:center;
+}
+
+.cajabuscarstandalone td a {
+	color: #73787E;
+	text-decoration: none;
+	font-size: 11px;
+	font-family: "Trebuchet MS",Arial,Helvetica,sans-serif;
+}
+
+.cajabuscarstandalone td a:hover {
+	text-decoration: underline;
+}
+
+
+.cajabuscarstandalone td {
+	background-color: #F8FCFD;
+	padding-left: 22px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+
+.cajabuscarstandalone {
+	border:  1px solid #A5AFB8;
+}
+
+
+
+</style>
+
+
+
+<table class="cajabuscarstandalone" width="100%">
+	<thead><th class="cajabuscarstandalonetitulo"> &nbsp;Buscar en el portal y en los ficheros </th></thead>
+	<tbody>
+	<tr><td>
+		
+<form method="post">
+<input type="hidden" name="cat" value="{ID_ACTUAL}" />
+<input type="text" name="query" value="" class="focuseme"  style="width: 20em" />
+<input type="submit" value="Buscar" class="botonenviar" />
+</form>
+
+	</td></tr>
+	</tbody>
+</table>
+
+
+	<table border="0" width="100%">
+	<patTemplate:tmpl name="listabusqueda" >
+	<tr id="fila_{ID_CONTENIDO}" class="{CSSOCULTAR}">
+		<td>
+			{BREAD}<br>
+			<a class="articulo" href="modvisor.php?modo=verarticulo&id_contenido={ID_CONTENIDO}&cat={ID_CATEGORIA}"><patTemplate:var name="nombre" modifier="html8" /></a><br>
+			<p class=""><patTemplate:var name="descripcion"  /></p>
+		</td>
+	</tr>
+	</patTemplate:tmpl>
+
+	</table>
+
+
+
+<script>
+
+
+
+
+</script>

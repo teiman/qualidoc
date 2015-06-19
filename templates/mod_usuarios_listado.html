@@ -1,0 +1,143 @@
+<script>
+   
+     function borrar_dato(dato,id){
+            cuadro_dialogo.si_no("Eliminando usuario...", "El usuario '"+dato+"' va a ser eliminado. ¿Desea continuar?",
+	 function(){
+             $("#borrar_dato"+id).submit();
+             return  true;
+            },
+            function(){
+              // no hay codigo
+              return false;
+            });
+
+     return false;
+}   
+   
+    
+function eliminar_del_grupo(idelemento, nombregrupo){
+       cuadro_dialogo.si_no("Eliminando usuario del grupo...", "El usuario sera eliminado del grupo '"+nombregrupo+"'. ¿Desea continuar?",
+	 function(){
+              
+              $.ajax({
+                type: 'POST',
+                url: "modusuarios.php",
+                data: {
+                    modo:"eliminar_usuario_del_grupo_listado",
+                    idgruposelementosaborrar:idelemento
+                    },
+                dataType:"json",
+                success: function(){
+                   $("#etiqueta"+idelemento).remove();
+                }
+              });
+              return true;
+            },
+            function(){
+              // no hay codigo
+              return false;
+            });
+            return false;
+    
+}
+
+function popup(id_elemento){
+    // cargamos los grupos
+    $("#idusuariogrupo").val(id_elemento);
+    $.ajax({
+                type: 'POST',
+                url: "modusuarios.php",
+               data: {
+                   modo:"cargar_grupos",
+                   idusuariogrupos:id_elemento,
+                   filtro:filtro_buscar_grupo()
+                    },
+                dataType:"json",
+                success: function(data){
+                   ver_grupos(data);
+                   
+                },
+                error: function(){
+                   var i = 1 
+                }
+                
+    });
+
+    cuadro_dialogo.popup_grupos({
+    titulo:"Gestión de grupos",
+         puedo_borrar_formula:false 
+         });
+}
+         
+               
+    
+    
+ 
+ 
+</script>
+
+    
+    <h3 class="subtitulo"> Gestión de usuarios</h3>
+<form method="post" action ="modusuarios.php">
+       <input type="hidden" name="modo" value="crear_usuario">
+       <input type="submit" value =" Alta Usuario" id="alta-usuario" class="boton-alta">
+</form>
+ 
+
+<table class="gestion-usuarios">
+<tr >
+    <td class="celda-buscador" colspan="2"><input type="text" value="Buscar" onfocus="if(this.value==this.defaultValue)this.value='';" onblur="if(this.value=='')this.value=this.defaultValue;">
+    <input type="button" value="Buscar" class="botonenviar2"/></td></tr>
+<tr>
+    <th>
+      &nbsp;
+    </th>
+    <th>
+    <patTemplate:Translate>Nombre Usuario</patTemplate:Translate>
+    </th>
+    <th id="direccion-correo">
+    <patTemplate:Translate>Dirección de correo</patTemplate:Translate>
+    </th>
+    <th>
+    <patTemplate:Translate>Empresa</patTemplate:Translate>
+    </th>
+</tr>
+
+
+<patTemplate:tmpl name="list_usuarios">  
+    
+    <tr class="filaListado {ESTILOCSS} <patTemplate:var name="linea"  modifier="html8" /> ">
+        <td width="100" class="colbtn">
+            <form method="post" action ="modusuarios.php" class="enlinea">
+                <input type="image" src="img/verde/editar1.png" title="Editar usuario" />
+                <input type="hidden" name="idusuario" value="<patTemplate:var name="idusuario"  modifier="html8" />">
+                <input type="hidden" name="modo" value ="modificar_usuario">      
+            </form>
+            <form method="post" action ="modusuarios.php" class="enlinea" id="borrar_dato<patTemplate:var name="idusuario"  modifier="html8" />">
+                <input type='hidden' name='modo' value='eliminar_dato' />
+                <input type='hidden' name='id_dato' value="<patTemplate:var name="idusuario"  modifier="html8" />" />
+                <input type="image" src="img/basura1.png" title="Eliminar usuario" onclick="return borrar_dato('<patTemplate:var name="nombreusuario"  modifier="html8" />',<patTemplate:var name="idusuario"  modifier="html8" />)"/>                                
+                
+            </form>
+            <input type="image" src="img/verde/llave.png" alt="icono administrador" class="admin-ico <patTemplate:var name="administrador"  modifier="html8" />" title="Usuario Adminstrador"/>                                
+        </td>
+        <td width=" 200"> <patTemplate:var name="nombreusuario"  modifier="html8" /> </td>   
+        <td width ="200"> <patTemplate:var name="direccioncorreo"  modifier="html8" /> </td>   
+        <td width ="200"> <patTemplate:var name="empresa"  modifier="html8" /> </td>   
+        <td>
+           <input type="image" src="img/verde/etiqueta.png" title="Etiquetas" class="enlinea" onclick="return popup('<patTemplate:var name="idusuario"  modifier="html8" />')"/>                                            
+           <patTemplate:var name="grupos"/> 
+           
+        </td>
+        
+    </tr>
+
+</patTemplate:tmpl>
+
+
+
+</table>
+    
+
+<patTemplate:tmpl name="popupgrupos" src="mod_grupos.html" autoload="on" parse="off"/>
+

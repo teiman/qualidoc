@@ -1,0 +1,179 @@
+<patTemplate:tmpl name="page">
+<!-- basica.html --><html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=9" />
+<title>QualiDoc</title>
+
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" /> 
+	<patTemplate:tmpl name="headers" src="headers.html" autoload="on" parse="on"/>
+
+<!--[if ie]>
+<style type="text/css">
+
+body  {
+	text-align: center;
+}
+
+.navegador {
+	width: 100%;
+}
+
+.headbar {
+ text-align: left;
+}
+
+.verdescargar {
+	position:relative;
+	top: -10px;
+}
+
+.cajabuscarstandalonetitulo {
+ padding-left:10px;
+ padding-right:0px;
+ text-align: left!important;
+}
+
+.cajacontenido {
+ width: 824px;
+}
+
+.cabeceratitulo {
+	height: 20px;
+	margin-top: 8px;
+	margin-bottom:0px;
+	padding-bottom: 0px;
+	margin-right:0px;
+}
+
+.contenedorcabeceratitulo {
+	float:right;
+}
+
+.tablalimpia {
+	width: 100%;
+	margin-right: 0px;
+}
+</style>
+<![endif]-->
+
+<script>
+    function alta_articulo(idcategoria){
+         document.location.href = "modcontenidos.php?modo=altaarticulo&idcategoria="+idcategoria
+    }
+    function alta_fichero(idcategoria){
+        document.location.href= "modcontenidos.php?modo=altafichero&idcategoria="+idcategoria
+    }
+</script>
+
+
+<script src="js/modificaciondoc.js"></script>
+<script src="js/permisos.js"></script>
+
+
+<style type='text/css' media='print'>
+
+input {
+	visibility: hidden;
+}
+
+</style>
+
+<style>
+
+.novedades {
+	margin-top: 20px;
+}
+
+</style>
+
+</head>
+<body>
+
+<!-- cabeza -->
+<patTemplate:tmpl name="cabeza" src="cabeza.html" autoload="on" parse="on"/>
+<!-- /cabeza -->
+
+<!-- headbar -->
+<patTemplate:tmpl name="headbar" src="headbar.html" autoload="on" parse="on"/>
+<!-- /headbar -->
+
+<div class="siderbar">
+
+<!-- menu -->
+<patTemplate:tmpl name="menu" src="menu.html" autoload="off" parse="on"/>
+<!-- /menu -->
+
+<!-- buscador -->
+<patTemplate:tmpl name="buscador" src="cajabusqueda.html" autoload="on" parse="on"/>
+<!-- /buscador -->
+
+
+</div>
+
+<div class="cajacontenido" id="cajacontenido">
+
+<div class="migas" >
+    <table width="100%" class="tablalimpia" id="tablactitulo"><tr>
+        <td>
+            <div id="container-migas" class="{OCULTAMIGAS}">
+            <a href="cat.php?cat=0">Portada »</a>
+            <patTemplate:tmpl name="migas" >
+            <span><a href="cat.php?cat={ID_CATEGORIA}"><patTemplate:var name="nombre" modifier="html8" /> »</a></span> 
+            </patTemplate:tmpl>
+            </div>
+        </td>
+        <td></td> 
+        <td align="right" valign="bottom" class="contenedorcabeceratitulo">
+            <span class="cabeceratitulo">Infórmate</span>
+        </td>
+    </table>
+</div>
+
+<div class="contenido">
+
+<table border="1" width="100%" class="cajas" border="0">
+
+<tr>
+<td class="c1"><patTemplate:var name="c1" /></td>
+<td class="c2"><patTemplate:var name="c2" /></td>
+<td class="c3"><patTemplate:var name="c3" /></td>
+</tr>
+
+<tr>
+<td class="c4"><patTemplate:var name="c4" /></td>
+<td class="c5"><patTemplate:var name="c5" /></td>
+<td class="c6"><patTemplate:var name="c6" /></td>
+</tr>
+
+<tr>
+<td class="c7"><patTemplate:var name="c7" /></td>
+<td class="c8"><patTemplate:var name="c8" /></td>
+<td class="c9"><patTemplate:var name="c9" /></td>
+</tr>
+
+<tr><td class="c10"> <patTemplate:var name="c10" /> <td></tr>
+
+</table>
+
+
+
+<patTemplate:tmpl name="listado" src="vacio.txt" autoload="off" parse="on"/>
+
+
+
+
+</div><!-- /contenido -->
+</div><!-- /cajacontenido -->
+
+
+<!-- copyright -->
+<patTemplate:tmpl name="copyright" src="legal.html" autoload="on" parse="off"/>
+<!-- /copyright -->
+
+
+
+
+
+</body>
+</html><!-- /basica.html -->
+</patTemplate:tmpl>

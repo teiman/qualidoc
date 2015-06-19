@@ -1,0 +1,144 @@
+<style>
+    .verdescargar {
+        ztext-align:right;
+        float:right;
+        margin-right: 20px;
+        padding-bottom: 10px;
+    }
+
+    .listadoficheros li {
+        margin-bottom: 6px;
+        border:1px solid #ccc;
+        padding:4px;
+        padding-left: 8px;
+        min-height: 40px;
+    }
+
+    .listadoficheros .cajadescripcion {
+        padding-left: 25px;
+        padding-top:4px;
+        padding-right: 20px;
+    }
+</style>
+
+
+<script>
+ 
+    function no_compartido(id_elemento, nombre){   
+   
+        cuadro_dialogo.si_no("No compartir..", "El documento ya no será compartido con "+nombre+". ¿Desea continuar?",
+        function(){
+              
+            $.ajax({
+                type: 'POST',
+                url: "cat.php",
+                data: {
+                    modo:"eliminar_compartido_con",
+                    idgruposelementosaborrar:id_elemento
+                },
+                dataType:"json",
+                success: function(){
+                    $("#etiqueta"+id_elemento).remove();
+                }
+            });
+            return true;
+        },
+        function(){
+            // no hay codigo
+            return false;
+        });
+        return false;
+    }
+
+function popup(id_elemento){
+    // esta funcion llama al popup y despues me retorna los
+    // datos de los grupos y usuarios con los que se ha compartido
+       
+    var actual_compartido=[];
+    actual_compartido = extraer_array_compartido(id_elemento);
+    var tipodocumento = 0; //(0 documento 1 carpeta)
+      
+    dialog.modificar_permisos(id_elemento, 0, actual_compartido,  function(devcompartidos){
+        
+        $.ajax({
+            type: 'POST',
+            url: "dlg_compartir.php",
+            data: {
+                modo:"crear_html_compartido_bd",
+                id_elemento:id_elemento,
+                tipo:tipodocumento,
+                compartidos:devcompartidos
+            },
+            dataType:"json",
+            success: function(data){
+                // actualizar html
+                
+                $("#compartidocon"+id_elemento).html(data);
+            },
+            error: function(){
+                
+                var i = 1 ;
+                   
+            }
+
+        });
+       
+    });
+    return false     
+}
+  
+function extraer_array_compartido(id_documento) {
+    var compartido=[];
+   
+    $(".js-etiq"+id_documento).each(function(){
+        compartido.push ({id_elemento:$("input[name=id_usrgrp]",this).val(), tipo_elemento:$("input[name=tipo_usrgrp]",this).val()});
+    });
+    
+    return compartido;    
+}     
+
+</script>
+
+<div class="volverlink"><a href="javascript:history.go(-1)">Volver</a></div>
+
+<h2 class="nombrecategoria"><patTemplate:var name="nombre" modifier="html8" /></h2>
+<div class="listadoficheros">
+
+    <ul class="listacategorias">
+        <patTemplate:tmpl name="listadoficheros" >
+
+            <li class="categoria">
+                <a id='titulo-documento' title='Documento de <patTemplate:var name="tipo" modifier="html8" />'
+
+                   href="modvisor.php?id_contenido={ID_CONTENIDO}&amp;cat={ID_CATEGORIA}"
+                   class="subcategoria">
+                    <patTemplate:var name="nombre_contenido" modifier="html8" /></a>
+                <div id="propietario-fecha">Propietario: <patTemplate:var name="nombre_usuario" modifier="html8" /> | Fecha: <patTemplate:var name="fecha_creacion" modifier="html8" /></div>
+                <div class="cajadescripcion">
+                    <span class="descripcion"><patTemplate:var name="descripcion"  /></span>
+                </div>
+                <div id="pie-documento">
+                    <div id="mostrar-compartido"><patTemplate:var name="compartidocon"/></a></div>
+                    <div class="verdescargar"><a href="modvisor.php?id_contenido={ID_CONTENIDO}&amp;cat={ID_CATEGORIA}"><img src="img/verde/ojo.png" alt="ver fichero" border="0" align="absmiddle" />Ver fichero</a><span class="{CSSDESCARGAR}"> |
+
+                            <a target="_new" href="descargar.php?id_contenido={ID_CONTENIDO}&cat={ID_ACTUAL}" title="<patTemplate:var name="path_archivo" modifier="html8" />">
+                               <img src="img/verde/descargas.png" alt="descargar fichero" border="0" align="absmiddle" />Descargar</a></span><span class="{CSSDESCARGAR2}"> | <a class="nobg"><img src="img/verde/descargas.png" border="0" align="absmiddle" />Descargar</a></span></div>
+                </div>
+                <div style="clear:both"></div>
+
+            </li>
+
+        </patTemplate:tmpl>
+    </ul>
+
+    <div class="websumarize-descarga-div {WEBSUMARIZE_CSS}">
+        <a class="websumarize-descarga " href="websumarize.php?id_categoria={ID_CATEGORIA}&modo=checklist" target="_blank">Descargar sumario de checklists</a>
+    </div>
+
+    <div class="websumarize-descarga-div ">
+        <a class="websumarize-descarga " href="websumarize.php?id_categoria={ID_CATEGORIA}&modo=cualquiera" target="_blank">Descargar sumario de ficheros</a>
+    </div>
+</div>
+<patTemplate:tmpl name="popuppermisos" src="dlg_compartir.html" autoload="on" parse="off"/>
+
+

@@ -1,0 +1,55 @@
+
+
+
+<patTemplate:tmpl name="edicion_pregunta">
+
+
+    <select name="tipopregunta" id='tipopregunta<patTemplate:var name="id_pregunta" />'
+            onchange='Listas.onchange_tipoPregunta(<patTemplate:var name="id_pregunta" />,<patTemplate:var name="id_grupo"/>)'
+    >
+        <option <patTemplate:var name="select_texto" modifier="html8" /> value="1">Texto</option>
+        <option <patTemplate:var name="select_exclusiva" modifier="html8" /> value="2">Exclusiva</option>
+        <option <patTemplate:var name="select_multiple" modifier="html8" /> value="3">Multiple</option>
+    </select>
+    
+
+    <div  id='opcion<patTemplate:var name="id_pregunta" />' class='<patTemplate:var name="opcion_multiple"  modifier="html8" />' value='<patTemplate:var name="id_pregunta" />'>
+        <table width="700" class="editor-documentos">
+            <thead>
+                <tr>
+                    <th>Opción</th>
+                    <th>Valor</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <patTemplate:tmpl name="listado_valores">  
+            <tr class='prg-fila-<patTemplate:var name="id_pregunta" default="0" /> valorposible-valor<patTemplate:var name="id_valor_posible" default="0"/> {CSS_FILA}'>
+                
+                <td>
+                    <input data-idpos='valor<patTemplate:var name="id_valor_posible" />' style="width: 550px" type="text" name="texto" value='<patTemplate:var name="texto" modifier="html8"/>' id='texto<patTemplate:var name="id_valor_posible" />'  >
+                </td> 
+                <td>
+                    <input style="width: 200px" type="text" name="valor"  value='<patTemplate:var name="valor"  />' id='valor<patTemplate:var name="id_valor_posible" />' >
+                </td> 
+                <td>
+                    <input type="image" src="img/basura1.png" title="Eliminar opcion" onclick="return Listas.borrarValor('<patTemplate:var name="id_pregunta"  modifier="html8" />',<patTemplate:var name="id_valor_posible"  modifier="html8" />)"/>
+                </td>
+            </tr>
+            </patTemplate:tmpl>
+
+            <tr class="js-siempreultima {CSS_BOTONMAS}">
+
+                <td colspan="2"><button type="button" onclick='Listas.nuevoValor(<patTemplate:var name="id_pregunta"  modifier="html8" />,<patTemplate:var name="id_grupo"/>)'>+</button></td>
+                <td></td>
+
+            </tr>
+        
+        </table>
+        
+    </div>
+
+    <br style="clear:both"/>
+    <input type="button" class="botonenviar boton-aceptar" value="Guardar" onclick='Listas.guardarCambios(<patTemplate:var name="id_pregunta" />,<patTemplate:var name="id_grupo"/>)'>
+    
+</patTemplate:tmpl>

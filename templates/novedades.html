@@ -1,0 +1,33 @@
+
+<!--<div class="volverlink"><a href="javascript:history.go(-1)">Volver</a></div>!-->
+
+<h2 class="nombrecategoria">Últimos documentos</h2>
+<div class="listadoficheros">
+
+
+<ul class="listacategorias">
+	<patTemplate:tmpl name="listadonovedades2" >
+
+	<li class="categoria {CSS_FILA}">
+		<a id='titulo-documento' title='Documento de <patTemplate:var name="tipo" modifier="html8" />'
+
+			href="modvisor.php?id_contenido={ID_CONTENIDO}&amp;cat={ID_CATEGORIA}"
+		 class="subcategoria"
+
+		><patTemplate:var name="nombrecontenido" modifier="html8" /></a><br>
+		<div class="cajadescripcion">
+		<span class="descripcion"><patTemplate:var name="descripcion"  /></span>
+		</div>
+		<div class="verdescargar"><a href="modvisor.php?id_contenido={ID_CONTENIDO}&amp;cat={ID_CATEGORIA}"><img src="img/verde/ojo.png" alt="ver fichero" border="0" align="absmiddle" />Ver fichero</a><span class="{CSSDESCARGAR}">
+
+</div>
+		<br style="clear:both"/>
+
+		</li>
+
+	</patTemplate:tmpl>
+</ul>
+
+
+</div>
+

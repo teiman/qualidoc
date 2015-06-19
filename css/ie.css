@@ -1,0 +1,17 @@
+.logincaja form {margin-top: 75px;}
+.menu td.enlaces, .menu td.enlaces-admin {background-position-y: -82px;}
+.menu td.enlaces:hover, .menu td.enlaces-admin:hover {background-position-y: 10px;}
+.verdescargar {top: 0 !important;}
+.boton-alta {filter: none;}
+.celda-buscador input[type="text"], #busqueda-menu, .paquete-busqueda {height: 20px;}
+#busqueda-menu, .botonenviar2 {height: 20px;}
+.gestion-usuarios tr th, .listadocontenidos tr th, .listadocategoriaseditar tr th {text-align: left;}
+.filaListado td.colbtn {width: 110px;}
+.etiqueta-grupo input [type="image"] {margin-top: 5px !important;}
+.etiqueta-grupo span {vertical-align: middle;}
+#form-crear-usuario, #form-edicion-usuarios, #password-ediusuarios, .form-cancelar {width: 420px;}
+#password-ediusuarios input[type="text"] {height: 29px;}
+.listadocontenidos tr th {text-align: left;}
+.cajacontenido {max-width: 85% !important;}
+#compartidocon {width: 50%;}
+.etiqueta-grupo span {vertical-align: top;}

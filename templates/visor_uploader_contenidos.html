@@ -1,0 +1,289 @@
+
+
+
+
+<script>
+
+
+
+        function createUploader(){
+
+            var uploader = new qq.FileUploader({
+                element: document.getElementById('file-uploader'),
+                action: 'modcontenidos.php',
+				params: {modo:'{MODOUPLOADER}',id_contenido:'{ID_CONTENIDO}',cat:'{ID_ACTUAL}'},
+                debug: false,
+				onSubmit: function(id, fileName){
+					$(".qq-upload-list").show();
+                },
+				onProgress: function(id,fileName){
+					$(".qq-upload-list").show();
+				},
+				onCancel: function(id, fileName){
+					$(".qq-upload-list").show();
+                },
+				onComplete: function(id, fileName, responseJSON){
+					if (responseJSON["error"])
+						return;
+
+					$("#cajanombrearchivo").html("<b>"+ fileName + "</b>");
+					$(".qq-upload-list").hide('slow');
+
+					$("#ficherosubido").val( responseJSON["localpath"] );
+
+				}
+            });
+
+			$("#qq-upload-list").hide();
+        }
+
+		
+
+function onCarga(){
+	var config = {
+		toolbar:
+		[
+			['Bold', 'Italic', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink'],
+			['UIColor']
+		]
+	};
+
+	// Initialize the editor.
+	// Callback function can be passed and executed after full instance creation.
+	$('.jquery_ckeditor').ckeditor(config);
+
+	createUploader();
+};
+
+//permisos
+
+function popup(id_elemento, tipo){
+       // esta funcion llama al popup y despues me retorna los
+       // datos de los grupos y usuarios con los que se ha compartido
+       var actual_compartido=[];
+       actual_compartido = extraer_array_compartido();
+      
+      
+       dialog.modificar_permisos(id_elemento, tipo, actual_compartido,  function(devcompartidos){
+           $.ajax({
+                type: 'POST',
+                url: "dlg_compartir.php",
+                data: {
+                    modo:"crear_html_compartido",
+                    id_elemento:id_elemento,
+                    tipo:tipo,
+                    compartidos:devcompartidos
+                },
+                dataType:"json",
+                success: function(data){
+                   // actualizar html
+                   $("#compartidocon").html(data);
+             }
+
+           });
+       
+   });
+   return false     
+}
+  
+  function extraer_array_compartido() {
+   var compartido=[];
+   $(".js-etiq").each(function(){
+           compartido.push ({id_elemento:$("input[name=id_usrgrp]",this).val(), tipo_elemento:$("input[name=tipo_usrgrp]",this).val()});
+       });
+    return compartido;    
+  }     
+  
+
+
+// fin permisos
+ function comprueba_campos() {
+        
+        var errores = 0;
+       
+        $(".js-textoerror").hide().removeClass("oculto");
+        if (!$("#categoriaseleccionada").val()){                
+            $("#error_validacion_carpeta").show();
+            errores++;
+        }
+        
+        if( !$("#titulo").val()){                
+            $("#error_validacion_titulo").show();
+            errores++;
+        }
+        
+        if(errores==0){
+           //devolvemos el array con los compartidos
+           var texto = JSON.stringify(extraer_array_compartido());
+
+            console.log("visor_uploader_contenidos.html:resultado_compartido:"+texto);
+           $("#resultado_compartido").val(texto);
+           return true;
+        }else{
+           return false;        
+        }        
+    }        
+
+function no_compartido(id_elemento,nombre){
+       
+        cuadro_dialogo.si_no("No compartir..", "El documento ya no será compartido con "+nombre+". ¿Desea continuar?",
+        function(){
+               $("#etiqueta"+id_elemento).remove();
+               return true;
+               
+        },
+        function(){
+            // no hay codigo
+            return false;
+        });
+       
+        return false;   
+    
+      
+  };
+ 
+
+function extraer_array_compartido() {
+   var compartido=[];
+   $(".js-etiq").each(function(){
+           compartido.push ({id_elemento:$("input[name=id_usrgrp]",this).val(), tipo_elemento:$("input[name=tipo_usrgrp]",this).val()});
+       });
+    return compartido;    
+  }     
+  
+</script>
+
+<style>
+
+.enalta {
+	configura:visual;
+display: {ENMOD};
+}
+
+.enmod {
+	configura:visual;
+	
+	display: {ENALTA};
+}
+
+
+</style>
+
+<h3 class="subtitulo subtitulo-sintabla">Subir archivo</h3>
+
+<form method="post" action="modcontenidos.php">
+
+<input type="hidden" name="modo" value="{MODO}"   />
+<input type="hidden" name="cat" value="{ID_ACTUAL}"   />
+<input type="hidden" name="id_contenido" value="{ID_CONTENIDO}"   />
+<input type="hidden" name="ficherosubido" value="" id="ficherosubido" />
+<input type="hidden" name="compartido" value="" id="resultado_compartido">
+
+<table width="700" class="editor-archivos">
+<tr class="tabla-filauno">
+	<td class="tipo"><span>Carpeta</span></td>
+	<td>
+            <!-- <input style="width: 550px" name="nombre" class="nombre" type="text" value="<patTemplate:var name="categoria"  />"> !-->
+            <select name="categorias" id="categoriaseleccionada">
+                        <option value="">carpeta - subcarpeta</option>
+                        <patTemplate:var name="combocategoriashoja"  />
+                    </select>
+            <div id="error_validacion_carpeta" class="oculto  js-textoerror">
+                    Seleccione una carpeta
+            </div>
+            
+        </td>
+</tr>    
+<tr>
+	<td class="tipo"><span>Título</span></td>
+	<td>
+            <input style="width: 550px" name="nombre_contenido" id="titulo" class="nombre" type="text" value="<patTemplate:var name="nombre_contenido"  />">
+            <div id="error_validacion_titulo" class="oculto  js-textoerror">
+                    Este campo es obligatorio
+            </div>       
+        </td>
+        
+</tr>
+
+<tr>
+	<td class="tipo"><span>Descripción</span></td>
+	<td><textarea id="prueba-color" rows="3" class="descripcion jquery_ckeditor" name="descripcion"><patTemplate:var name="descripcion" modified="html8" /></textarea></td>
+</tr>
+
+
+<tr>
+	<td class="tipo">
+		<span class="enmod">Modificaciones archivo</span><span class="enalta">Seleccionar archivo</span>
+	</td>
+        <td>
+            <div id="datos-archivo">
+                <div id="archivo-actual">
+                    <span class="tipo">Archivo actual</span>
+                    <div id="cajanombrearchivo"> <patTemplate:var name="path_archivo"  modifier="html8" /></div>
+                   
+                </div>
+                <div id="archivo-cambiar">
+                    <span class="tipo">Cambiar archivo</span>
+                    
+                </div>
+                <div id="file-uploader">
+
+                    <input type="file" name="qqfile" />
+                    <noscript>
+                            <p>Please enable JavaScript to use file uploader.</p>
+                    </noscript>
+                </div>
+                 <div style="clear: both;"></div>
+            </div>
+        </td>
+<tr>
+    <td class="tipo">
+        <span>Compartido con:</span>                                          
+    </td>
+    <td>
+        <input type="image" src="img/verde/compartir-grande.png" title="Etiquetas" class="enlinea" onclick="return popup('<patTemplate:var name="id_documento"  modifier="html8" />','0')"/>  
+        <div class="grupo-etiquetas" id="compartidocon">              
+            <patTemplate:var name="lista_permisos"/>
+        </div>
+    </td>
+          
+</tr>
+        
+
+<tr>
+	<td></td>
+	<td>
+            <div id="publicar-archivo"
+		<span class="enalta"><input type="submit" value="Publicar archivo"  class="botonenviar boton-aceptar" onclick ="return comprueba_campos()" /> </span>
+		<span class="enmod"><input type="submit" value="Actualizar archivo"  class="botonenviar boton-aceptar onclick ="return comprueba_campos()" /> </span>
+                <span class="cancelar-form"><input type="button" value="Cancelar"  class="botonenviar boton-cancelar" onclick="location.href='<patTemplate:var name="volver"/>'" /> </span>
+            </div>
+        </td>
+</tr>
+
+</table>
+
+</form>
+
+<patTemplate:tmpl name="popuppermisos" src="dlg_compartir.html" autoload="on" parse="off"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

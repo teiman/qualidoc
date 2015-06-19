@@ -1,0 +1,107 @@
+
+    
+<h3 class="subtitulo subtitulo-sintabla">Gestión de carpetas</h3>
+
+<div class="edicion_categorias">
+    
+    <p class="{CSSOCULTARTRONCAL}">
+		<table class="enlacesuperior">
+		<tr>
+		<!-- <td>
+		<a href='modcat.php?cat=<patTemplate:var name="idpadrecategoriaactual" />'>
+			<img src="img/bw/atras.jpg" align="absmiddle" border="1" />
+		</a>
+		</td>
+		<td> &nbsp; </td> -->
+		<td>
+		<a href='modcat.php?cat=<patTemplate:var name="idpadrecategoriaactual" />'>
+                    Salir a carpeta superior
+		</a>
+		</td>
+                </tr>
+		</table>
+    </p>
+
+<!-- ------------------------------ ------------------------------ -->
+
+<fieldset>
+<form method="post" action ="modcat.php">
+     <input type="hidden" name="modo" value="crear_carpeta">
+     <input type="hidden" name="cat" value="<patTemplate:var name="id_actual" modifier="html8" />" />
+     <input type="submit" value ="Crear carpeta" id="alta_carpeta" class="boton-alta">
+</form>    
+<h4>Editando subcarpetas de "<patTemplate:var name="nombrecategoriaactual" modifier="html8" />"</h4>
+
+
+
+<form method="post" action="modcat.php">
+	<input type="hidden" name="cat" value="{ID_ACTUAL}" />
+	<input type="hidden" name="modo" value="guardarcambioscategorias" />
+</form>           
+       
+<table border="0" class="listadocategoriaseditar">
+<thead class="<patTemplate:var name="hay_elementos" modifier="html8" /> ">
+  <th class="texto-oculto">Navegar</th>
+  <th>Nombre</th>
+  <th>Peso</th>
+  <th class="texto-oculto">Operaciones</th>
+</thead>
+	<patTemplate:tmpl name="listacategorias" >
+	<tr id="fila_{TT}" class="{CSSOCULTAR}">
+            <td style="width: 10em" class="entrar-edit-cat">
+                    <a href="modcat.php?cat={ID_CATEGORIA}" title="entrar">entrar</a>
+                    <form method="post" action="modcat.php" class="enlinea">
+                        <input type="image" src="img/verde/editar1.png" title="Editar Carpeta" />
+                        <input type="hidden" name="id_categoria_editar" value="<patTemplate:var name="id_categoria"  modifier="html8" />">
+                        <input type="hidden" name="id_padre" value="<patTemplate:var name="id_padre"  modifier="html8" />">       
+                        <input type="hidden" name="modo" value ="modificar_carpeta">
+
+			            <input type="hidden" name="id_categoria_{TT}" value="{ID_CATEGORIA}"/>
+                    </form>
+                <form method="post" action="modcat.php" class="enlinea" onsubmit="return eliminar('{TT}','<patTemplate:var name="nombre" modifier="html8" />')">
+                    <input type="hidden" name="modo" value ="eliminar_carpeta">
+                    <input type="hidden" name="id_padre" value="<patTemplate:var name="id_padre"  modifier="html8" />">
+                    <input type="image" src="img/basura1.png" title="Eliminar" />
+                    <input type="hidden" name="id_categoria" value="{ID_CATEGORIA}"/>
+                </form>
+
+            </td>    
+            <td class="tabla-sininput">
+                <patTemplate:var name="nombre" modifier="html8" /> 
+            </td>
+            <td class="tabla-sininput">
+                <patTemplate:var name="posicion" modifier="html8" /> 
+            </td>			
+	</tr>
+	</patTemplate:tmpl>
+
+
+	</table>
+
+
+
+<div class="mensajeaviso bocadillo-aviso {MENSAJECSS}"><patTemplate:var name="mensajeaviso" /></div>
+
+
+</fieldset>
+
+
+<script>
+
+function eliminar(idfila,name){
+
+	if (!confirm("¿Eliminar categoría "+ name+ "?")){
+		return false;
+	}
+
+	$("#nombre_"+idfila).val("ELIMINADO");
+	$("#posicion_" +idfila).val(-666);
+	$("#fila_"+idfila).hide();
+
+
+    return true;
+}
+
+
+</script>
+</div>

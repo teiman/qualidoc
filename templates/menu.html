@@ -1,0 +1,29 @@
+
+<table class="menu">
+<!--usuario normal-->    
+<tr><td class="seccion" id="hmenu1">  <img src="theme/menu-ico.png" alt="icono menu"> Secciones</td></tr>
+<tr><td class="enlaces"><a class="enlacemenu" href="cat.php?cat=0">Portada</a></td></tr>
+<tr><td class="enlaces"><a class="enlacemenu" href="novedades.php">Últimos documentos</a></td></tr>
+<tr><td class="enlaces"><a class="enlacemenu" href="modcompme.php">Compartido conmigo</a></td></tr>
+<tr><td class="enlaces"><a class="enlacemenu" href="modcontenidos.php">Mis publicaciones</a></td></tr>
+<tr><td class="enlaces"><a class="enlacemenu" href="modcontenidos.php?modo=altaarticulo">Crear documento</a></td></tr>
+<tr><td class="enlaces"><a class="enlacemenu" href="modcontenidos.php?modo=altafichero">Subir archivo</a></td></tr>
+<tr><td class="enlaces enlaces-admin <patTemplate:var name="esadmin"  modifier="html8" />"><a class="enlacemenu enlace-menu-admin" href="modchecklist.php?modo=crear">Crear checklist</a></td></tr>
+<tr><td class="enlaces enlaces-admin <patTemplate:var name="esadmin"  modifier="html8" />"><a class="enlacemenu enlace-menu-admin" href="modopendata.php?modo=crear">Crear enlace opendata</a></td></tr>
+<tr><td class="enlaces"><a class="enlacemenu" href="modfiltrodocs.php">Buscar</a></td></tr>
+<!--administrador -->
+<tr><td class="seccion <patTemplate:var name="esadmin"  modifier="html8" />" id="hmenu2"> <img src="theme/admin-ico.png" alt="icono administrador"> Administrador</td></tr>
+<tr><td class="enlaces enlaces-admin <patTemplate:var name="esadmin"  modifier="html8" />"><a class="enlacemenu enlace-menu-admin" href="modcat.php">Gestión carpetas</a></td></tr>
+<tr><td class="enlaces enlaces-admin <patTemplate:var name="esadmin"  modifier="html8" />"><a class="enlacemenu enlace-menu-admin" href="modusuarios.php">Gestión usuarios</a></td></tr>
+
+
+<!-- <tr><td class="enlaces"><a class="enlacemenu" href="login.php">Acceso administrador</a></td></tr> -->
+
+<!-- cambio en cierre de sesi�n a cabecera
+
+<tr><td class="enlaces"><a class="enlacemenu" onclick="return cierro_sesion()">Cerrar sesión</a></td></tr>
+
+-->
+
+</table>
+

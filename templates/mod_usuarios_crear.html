@@ -1,0 +1,89 @@
+
+
+<script>
+
+    function comprueba_campos() {
+
+        var errores = 0;
+       
+        $(".js-textoerror").hide().removeClass("oculto");
+        
+        if (!$("#nombre").val()){                
+            //alert("Debe introducir el texto de la incidencia");
+            $("#error_validacion_nombre").show();
+            errores++;
+        }
+        if( !$("#direccioncorreo").val()){                
+            //alert("Debe introducir el texto de la incidencia");
+            $("#error_validacion_direccioncorreo").show();
+            errores++;
+        }
+        if( !$("#password").val() ){                
+            //alert("Debe introducir el texto de la incidencia");
+            $("#error_validacion_password").show();
+            errores++;
+        }
+        if( !$("#empresa").val() ){                
+            //alert("Debe introducir el texto de la incidencia");
+            $("#error_validacion_empresa").show();
+            errores++;
+        }
+        
+        if(errores==0){
+            return true;        
+        }else{
+            return false;        
+        }        
+    }        
+</script>
+
+<h3 class="subtitulo">Alta usuario</h3>
+
+<form method="post" id="form-crear-usuario" action ="modusuarios.php" onsubmit="return comprueba_campos()">
+     
+   <div class="maquetar-formulario">
+     <label for="nombre">Nombre usuario:</label>
+     <input type="text" name="nombreusuario"  id="nombre">
+     <div id="error_validacion_nombre" class="oculto  js-textoerror">
+                    Este campo es obligatorio
+     </div>
+   </div>  
+   <div class="maquetar-formulario">
+     <label for="direccioncorreo">Descripción:</label>
+     <input type="text" name="direccioncorreo" id="direccioncorreo">
+     <div id="error_validacion_direccioncorreo" class="oculto  js-textoerror">
+                    Este campo es obligatorio
+     </div>
+   </div>
+   
+   <div class="maquetar-formulario">
+     <label for="password">Password:</label>
+     <input type="text" name="password" id="password">
+     <div id="error_validacion_password" class="oculto  js-textoerror">
+                    Este campo es obligatorio
+     </div>
+   </div>
+   <div class="maquetar-formulario">
+     <label for="empresa">Nombre Empresa:</label>
+     <input type="text" name="empresa" id="empresa">
+     <div id="error_validacion_empresa" class="oculto  js-textoerror">
+                    Este campo es obligatorio
+     </div>
+   </div> 
+   <div class="maquetar-formulario">
+     <label for="administrador">Administrador:</label>
+     <input type="checkbox" name="administrador" id="administrador">
+   </div>
+    
+     <!-- modificación para botón cancelar -->
+     
+     <div class="botones-derecha"> <!-- caja botones -->
+     
+     <input type="hidden" name="modo" value="usuario_creado">
+     <input type="submit" value="Alta" class="boton-aceptar">
+     
+     <input type="button" value ="Cancelar" class="boton-cancelar" onclick="location.href='modusuarios.php'"> <!-- botón cancelar -->
+     
+     </div> <!-- fin caja botones -->
+</form>
+

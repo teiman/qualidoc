@@ -1,0 +1,18 @@
+
+
+
+.visualizadorhtml , .visualizadorpdf , .visualizadorvideo {
+ /*border-left: 32px solid white;
+ border-right: 24px solid white;*/
+ font-size: 12px;
+}
+
+.visualizadorhtml h2,.visualizadorpdf h2 , .visualizadorvideo h2 {
+ color: #004130;
+ margin-bottom: 15px;
+ margin-left: 15px;
+ }
+.descripcionfichero p {font-size: 13px; color: #444; margin-top: 5px; margin-bottom: 10px; margin-left: -5px;}
+
+ul.listadescarga {margin: 5px -5px; border-top: 1px solid #02b284; padding-top: 3px;}
+

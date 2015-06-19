@@ -1,0 +1,187 @@
+<script>
+    $(document).ready(function() {
+        $('.m-menu').dropit();
+    });
+
+    $(function(){
+        var opt="<patTemplate:var name="combocategoriashoja" modifier="html8" />";
+        opt = "<select name='categoriamover' id='categoriaseleccionada'>"+opt+"</select>"
+        $("#categorias").html(opt);
+    });
+    
+    function docsupervisor(){
+        if ($("#compadmin").is(':checked')) {
+            $("#listarsupervisor").val("SI");
+        }else{
+            $("#listarsupervisor").val("NO");  
+        };
+        $("#compartido-admin").submit();
+    }
+ 
+    function borrar_contenidos_seleccionados(){
+        cuadro_dialogo.si_no("Eliminando contenidos...", "Los contenidos seleccionados serán eliminados. ¿Desea continuar?", 
+        function(){
+            //si
+            
+            $("#contenidos_borrar").val(revisar_seleccionados());
+            $("#borrar_categorias").submit();
+            return true;
+         
+         
+        }, 
+        function(){
+            //no
+            return false;
+        });  
+        return false;
+    };
+    function cambiar_categorias(){
+ 
+        cuadro_dialogo.popup_categorias({titulo:"Cambiando categorias..."},
+        function(){
+            
+            $("#categoriamover").val($("#categoriaseleccionada").val());
+            $("#contenidos_mover").val(revisar_seleccionados());
+            $("#mover_categorias").submit();
+            return false;
+        },
+        function(){
+            return false;
+        });
+        return false;
+      
+    }
+
+    function revisar_seleccionados(){
+        var seleccionados = "" 
+        $(".js-seleccion").each(function(){
+            if($("input[name=seleccion]",this).is(':checked')){
+                //añadimos al array para borrar;
+                if (seleccionados != ""){
+                    seleccionados = seleccionados + ",";
+                }  
+                seleccionados =  seleccionados + $("input[name=id_contenido]",this).val();
+            }
+        });
+        return seleccionados;          
+    }
+
+
+    function activo(tipo){
+        var name = "#tipo_" + tipo;
+
+        var $checkbox = $(name);
+
+        $checkbox.attr("checked","true");
+
+    }
+
+    function elactivo(accion){
+        if(accion=="movercategoria"){
+            $("#categoriamover").removeClass("oculto");
+        } else {
+            $("#categoriamover").addClass("oculto");
+        }
+    }
+
+
+    function nuevoArticulo(){
+        document.location.href = "modcontenidos.php?modo=altaarticulo ";
+    }
+
+    function nuevoFichero(){
+        document.location.href = "modcontenidos.php?modo=altafichero";
+    }
+
+
+
+</script>
+
+
+<h3 class="subtitulo subtitulo-sintabla">Mis publicaciones</h3>
+
+<table class="gestion-documentos">
+    <tr >
+        <td class="celda-subir"> <input class="boton-alta" type="button" value="Crear documento" class="accionboton botonenviar" onclick="nuevoArticulo()" />  </td>  
+        <td class="celda-subir"> <input class="boton-alta" type="button" value="Subir archivo" class="accionboton botonenviar"  onclick="nuevoFichero()" />  </td>
+        <td id="celda-compartido-admin">
+            <form id="compartido-admin" method="post" action="modcontenidos.php" class="<patTemplate:var name="esadmin"  modifier="html8" />">
+                  <input type="hidden" name="listarsupervisor" id="listarsupervisor" value="NO" />
+                <input type="hidden" name="modo" value="listando" />
+                <div id="texto-compartido-admin">Administrador</div>
+                <input type="checkbox" name="compadmin" id="compadmin" <patTemplate:var name="checkedadmin"  modifier="html8" /> onclick="docsupervisor()"><label for="compadmin"><span></span></label>
+                <div class="clear"></div>
+            </form>
+        </td>
+    </tr>
+    <!--<tr >
+        <td class="celda-buscador" colspan="2"><input type="text" value="Buscar" onfocus="if(this.value==this.defaultValue)this.value='';" onblur="if(this.value=='')this.value=this.defaultValue;">
+            <input type="button" value="Buscar" class="botonenviar2"/></td>
+
+    </tr>
+    !-->
+</table>
+
+<table zwidth="99%" border="0" class="listadocontenidos {CSSOCULTARLISTADO}">
+    <thead>
+
+    <th align="left">
+    <ul class="m-menu">
+        <li>
+            <a id="botonMenu" class ="botonMenu" href="#"></a>
+            <ul>
+                <li><form method="post" action="modcontenidos.php" id="borrar_categorias">
+                        <input type="hidden" name ="modo" value ="eliminar"/>    
+                        <input type="hidden" name ="contenidos_borrar" id="contenidos_borrar" value =""/>
+                        <a href="#" onclick="return borrar_contenidos_seleccionados()">Eliminar contenidos</a>
+                    </form>
+                </li>
+                <li>
+                    <form method="post" action="modcontenidos.php" id="mover_categorias">
+                        <input type="hidden" name ="modo" value ="movercategoria"/>
+                        <input type="hidden"  name ="contenidos_mover" id="contenidos_mover" value="" />
+                        <input type="hidden" name ="categoriamover" id="categoriamover" value="" />
+                        <a href="#" onclick="return cambiar_categorias()">Mover de carpeta</a>
+                    </form>
+                </li>
+
+            </ul>
+        </li>
+    </ul>
+</th>
+<th class="columna-editar">Operaciones</th>
+
+<th width="50%">Título</th>
+<th>Tipo</th>
+<th>Carpeta</th>
+
+</thead>
+
+<patTemplate:tmpl name="listadocumentos" >
+    <tr>
+        <td width="50px" class="js-seleccion"><input type="checkbox" name="seleccion" id="c_{TT}" ><label for="c_{TT}"><span></span></label><input type="hidden" name="id_contenido" value="{ID_CONTENIDO}" /></td>
+        <td class="editar-contenido"><a class="{CSS_EDITAR} {MISC}" href="{MODULO}.php?cat={ID_ACTUAL}&modo=editar&id_contenido={ID_CONTENIDO}">editar</a></td>
+        <td><a  title="" href="modvisor.php?id_contenido={ID_CONTENIDO}&cat={ID_CATEGORIA}&submodo=volvercontenidos"><patTemplate:var name="nombrecontenido" modifier="html8" /></a></td>
+        <td class="tipocontenedor"><span class="tipo"><p class="doc-{TIPO}">Documento {TIPO}</p></span></td>
+        <td><span class="tipo"><nobr><patTemplate:var name="nombrecategoria" modifier="html8" /></nobr></span></td>
+    </tr>
+</patTemplate:tmpl>
+
+</table>
+
+
+<center>{MENSAJEVACIO}</center>
+
+<!--<patTemplate:tmpl name="popupcategorias" src="dlg_categorias.html" autoload="on" parse="on"/> !-->
+
+<!-- </form>-->
+<div id="popupcategorias" title="" class="oculto">
+    <div class="paquete-busqueda">
+        <input type="text" value="Buscar" id="buscargrupo" onfocus="if(this.value==this.defaultValue)this.value='';" onblur="if(this.value=='')this.value=this.defaultValue;"> 
+        <input type="button" value="Buscar" class="botonenviar2" onclick="buscar_grupo()"/>
+    </div>
+
+    <span class="font">Los documentos seleccionados cambiarán su carpeta por:</span>
+    <div id="categorias" name="categorias" >
+
+    </div>     

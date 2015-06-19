@@ -1,0 +1,30 @@
+ <!--<div class="volverlink"><a href="javascript:history.go(-1)">Volver</a></div> !-->
+ <h3 class="subtitulo subtitulo-sintabla titulo">Compartido conmigo</h3>
+ 
+ <!--<table class="gestion-documentos">
+    <tr >
+        <td class="celda-buscador" colspan="2"><input type="text" value="Buscar" onfocus="if(this.value==this.defaultValue)this.value='';" onblur="if(this.value=='')this.value=this.defaultValue;">
+            <input type="button" value="Buscar" class="botonenviar2"/></td>
+    </tr>
+</table>
+ !-->
+ 
+
+<table zwidth="99%" border="0" id="tabla-compme" class="listadocontenidos {CSSOCULTARLISTADO}">
+        <thead>
+        <th width="40%">Título</th>
+        <th>Autor</th>
+        <th>Tipo</th>
+        <th>Carpeta</th>
+        </thead>
+
+        <patTemplate:tmpl name="listadocumentos" >
+            <tr>
+                <td><a  title="" href="modvisor.php?id_contenido={ID_CONTENIDO}&cat={ID_CATEGORIA}&submodo=volvercontenidos"><patTemplate:var name="nombrecontenido" modifier="html8" /></a></td>
+                <td><span class="tipo"><nobr><patTemplate:var name="nombreusuario" modifier="html8" /></nobr></span></td>
+                <td class="tipocontenedor"><span class="tipo"><p class="doc-{TIPO}">Documento {TIPO}</p></span></td>
+                <td><span class="tipo"><nobr><patTemplate:var name="nuevacategoria" modifier="html8" /></nobr></span></td>
+            </tr>
+        </patTemplate:tmpl>
+
+    </table>

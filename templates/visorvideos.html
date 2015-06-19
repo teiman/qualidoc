@@ -1,0 +1,68 @@
+<script>
+
+
+function onCarga(){
+
+	/*
+	$('#contendorpelicula').flash({
+		src: 'descargar.php?id_contenido={ID_CONTENIDO}&cat={ID_ACTUAL}&forcevideo=1',
+		width: 320,
+		height: 240
+	});
+	*/
+   flowplayer("player", "js/flowplayer/flowplayer-3.2.5.swf", {
+		onLoad: function(){
+			//alert("video cargado");
+		},
+		onError: function( code,message){
+			//alert("ERROR:"+ code+ ",msg:"+message);
+		},
+		zlog: { level: 'debug' }
+	});
+}
+
+
+</script>
+
+<style>
+#contendorpelicula {
+
+	border:4px solid gray;
+}
+
+</style>
+
+<div class="visualizadorvideo cajavisualizador">
+<div class="volverlink"><a href="{VOLVERHREF}">Volver</a></div>
+
+<h2 class="titulovideo">Video: <patTemplate:var name="nombre" modifier="html8" /></h2>
+
+<div class="cuerpo bloqueinterno">
+
+
+		<a
+			 href="descargar.php?id_contenido={ID_CONTENIDO}%26cat={ID_ACTUAL}%26forcevideo=1%26pretend=video.flv"
+
+			 style="display:block;width:520px;height:330px"
+			 id="player">
+		</a>
+
+		<p class="descarga" style="margin-top: 20px">
+
+		<ul class="listadescarga">
+<li class="ficherodescarga"> <a target="_new" href="descargar.php?id_contenido={ID_CONTENIDO}&cat={ID_ACTUAL}" title="<patTemplate:var name="path_archivo" modifier="html8" />">
+<img src="img/verde/descargas.png" border="0" align="absmiddle" />
+Descargar video</a></li>
+</ul>
+
+		</p>
+
+
+
+
+</div>
+
+
+
+</div>
+

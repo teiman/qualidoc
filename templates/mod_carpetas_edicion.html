@@ -1,0 +1,125 @@
+<script>
+    
+   function popup(id_elemento, tipo){
+       // esta funcion llama al popup y despues me retorna los
+       // datos de los grupos y usuarios con los que se ha compartido
+       var actual_compartido=[];
+       actual_compartido = extraer_array_compartido();
+      
+      
+       dialog.modificar_permisos(id_elemento, tipo, actual_compartido,  function(devcompartidos){
+           
+           $.ajax({
+                type: 'POST',
+                url: "dlg_compartir.php",
+                data: {
+                    modo:"crear_html_compartido",
+                    id_elemento:id_elemento,
+                    tipo:tipo,
+                    compartidos:devcompartidos
+                },
+                dataType:"json",
+                success: function(data){
+                   // actualizar html
+                   $("#compartidocon").html(data);
+                   
+             }
+
+           });
+       
+   });
+   return false     
+}
+  
+  function extraer_array_compartido() {
+   var compartido=[];
+   $(".js-etiq").each(function(){
+           compartido.push ({id_elemento:$("input[name=id_usrgrp]",this).val(), tipo_elemento:$("input[name=tipo_usrgrp]",this).val()});
+       });
+    return compartido;    
+  }     
+  
+  
+  function no_compartido(id_elemento, id_tipo, nombre){
+       
+        cuadro_dialogo.si_no("No compartir..", "El documento ya no será compartido con "+nombre+". ¿Desea continuar?",
+        function(){
+               $("#etiqueta"+id_elemento+"tipo"+id_tipo).remove();
+               return true;
+        },
+        function(){
+            // no hay codigo
+            return false;
+        });
+       
+        return false;   
+    
+      
+  };
+  
+    function comprueba_campos() {
+
+        var errores = 0;
+       
+        $(".js-textoerror").hide().removeClass("oculto");
+        
+        if (!$("#nombre_carpeta").val()){                
+            $("#error_validacion_nombre").show();
+            errores++;
+        }
+        if( !$("#posicion").val()){                
+            $("#error_validacion_direccioncorreo").show();
+            errores++;
+        }
+        if(errores==0){
+            //devolvemos el array con los compartidos
+            
+            var texto = JSON.stringify(extraer_array_compartido()) ;
+
+            console.log("mod_carpetas_edicion.html:resultado_compartido:"+texto);
+            $("#resultado_compartido").val(texto);
+            
+            return true;
+        }else{
+            return false;        
+        }        
+    }        
+</script>
+
+<h3 class="subtitulo subtitulo-sintabla"><patTemplate:var name="accion" modifier="html8"/></h3>
+
+<form method="post" id="form-crear-usuario" action ="modcat.php" onsubmit="return comprueba_campos()"> 
+     <input type="hidden" name="id_categoria" id="id_categoria<patTemplate:var name="id_categoria" modifier="html8"/>" value="<patTemplate:var name="id_categoria" modifier="html8"/>"/>
+   <div class="maquetar-formulario">
+     <label for="nombre">Nombre carpeta</label>
+     <input type="text" name="nombrecategoria"  id="nombre_carpeta" value="<patTemplate:var name="nombre_carpeta" modifier="html8"/>">
+     <div id="error_validacion_nombre" class="oculto  js-textoerror">
+                    Este campo es obligatorio
+     </div>
+   </div>
+   <div class="maquetar-formulario">
+     <label for="direccioncorreo">Peso:</label>
+     <input type="text" name="posicion" id="posicion" value="<patTemplate:var name="posicion" modifier="html8"/>">
+     <div id="error_validacion_direccioncorreo" class="oculto  js-textoerror">
+                    Este campo es obligatorio
+     </div>
+   </div>        
+   <div class="maquetar-formulario compartido">
+     <label for="gestion_grup">Carpeta compartida con:</label>
+     <input type="image" src="img/verde/compartir-medio.png" title="Etiquetas" class="enlinea" onclick="return popup('<patTemplate:var name="id_categoria"  modifier="html8" />','1')"/>                                            
+     <div class=grupo-etiquetas id="compartidocon">              
+        <patTemplate:var name="lista_permisos"/>
+     </div>
+   </div>
+            
+     <div class="botones-derecha"> <!-- caja botones -->
+     <input type="hidden" name="compartido" value="" id="resultado_compartido">
+     <input type="hidden" name="id_padre" value="<patTemplate:var name="id_padre"  modifier="html8" />">
+     <input type="hidden" name="modo" value="<patTemplate:var name="modo"  modifier="html8" />">
+     <input type="submit" value="Guardar" class="boton-aceptar" onclick="return comprueba_campos()">
+     <input type="button" value ="Cancelar" class="boton-cancelar" onclick="location.href='modcat.php'"> <!-- botón cancelar -->
+     
+     </div> <!-- fin caja botones -->
+</form>
+
+<patTemplate:tmpl name="popuppermisos" src="dlg_compartir.html" autoload="on" parse="off"/>

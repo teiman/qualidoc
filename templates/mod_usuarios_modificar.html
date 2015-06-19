@@ -1,0 +1,138 @@
+
+<script>
+   
+    
+    function comprueba_campos() {
+
+        var errores = 0;
+        $(".js-textoerror").hide().removeClass("oculto");
+        if (!$("#nombre").val()){                
+            alert("nombre");
+            $("#error_validacion_nombre").show();
+            errores++;
+        }
+        if (!$("#direccioncorreo").val()){                
+            $("#error_validacion_direccioncorreo").show();
+            errores++;
+        }
+        
+        if (!$("#empresa").val()){   
+            $("#error_validacion_empresa").show();
+            errores++;
+        }
+           
+        
+        if(errores==0){
+            return true; 
+         } else {
+            return false;        
+        }        
+    }        
+    
+     function comprueba_password() {
+        
+        var errores = 0;
+        $(".js-textoerror_pw").hide().removeClass("oculto");
+        if( $("#password").val() !=$("#password2").val()){                
+            $("#error_validacion_password").show();
+            errores++;
+        }
+        if(! $("#password").val()){                
+            $("#error_validacion_password").show();
+            errores++;
+        }
+        
+        if(errores==0){
+            return true;        
+        }else{
+            return false;        
+        }        
+    }        
+</script>
+
+<h3 class="subtitulo">Edición de Usuarios</h3>
+
+<form method="post" action ="modusuarios.php" id="form-edicion-usuarios" onsubmit="return comprueba_campos()">
+  <div class="maquetar-formulario">
+    <label for="nombre">Nombre usuario:</label>
+    <input type="text" name="nombre" id="nombre" value ="<patTemplate:var name="nombre"/>">    
+    <div id="error_validacion_nombre" class="oculto  js-textoerror">
+                    Este campo es obligatorio
+    </div>
+  </div>
+  <div class="maquetar-formulario">
+    <label for="direccioncorreo">Correo electrónico:</label>
+    <input type="text" name="direccioncorreo" id="direccioncorreo" value ="<patTemplate:var name="direccioncorreo"/>">
+    <div id="error_validacion_direccioncorreo" class="oculto  js-textoerror">
+                    Este campo es obligatorio
+    </div>
+  </div>
+  <div class="maquetar-formulario">
+
+    <label for="empresa">Nombre empresa:</label>
+    <input type="text" name="empresa" id="empresa" value ="<patTemplate:var name="empresa"/>">
+    <div id="error_validacion_empresa" class="oculto  js-textoerror">
+                    Este campo es obligatorio
+     </div>
+   </div>
+   <div class="maquetar-formulario">
+     <label for="administrador">Administrador:</label>
+     <input type="checkbox" name="administrador" id="administrador" <patTemplate:var name="administrador" modifier="html8"/>/>
+   </div>
+     <!--
+     <br>
+     <label for="gruposexistentes">Grupos a los que pertenece</label>
+     <br>
+     <br>
+   <patTemplate:tmpl name="list_grupos">  
+    
+    <tr class="filaListado {ESTILOCSS} <patTemplate:var name="linea"  modifier="html8" /> ">
+        <td width="80" class="colbtn">
+           <input type="image" src="img/basura1.png" title="Eliminar grupo" onclick="borrar_de_grupo('<patTemplate:var name="idgruposelementos"  modifier="html8" />','<patTemplate:var name="nombregrupo"  modifier="html8" />' )"/>
+        </td>
+        <td width=" 200"> <patTemplate:var name="nombregrupo"  modifier="html8" /> </td>   
+        <br>
+    </tr>
+
+    </patTemplate:tmpl>
+    <br>
+     <label for="grupos">Añadir a grupo:</label>
+     <select>
+         <patTemplate:var name="gruposexistentes"/> 
+     </select>   
+     <br>
+     <br>
+    -->
+    <input type="hidden" name="idusuario" value ="<patTemplate:var name="idusuario"/>">
+     <input type="hidden" name="modo" value="usuario_modificado">
+     <input type="submit" value="Guardar datos" id="boton-cambiousuario" class="boton-aceptar">
+     <br>
+     <br>
+     <br>
+          
+</form>
+
+<form method="post" action ="modusuarios.php" id="password-ediusuarios" onsubmit="return comprueba_password()">
+    
+     <input type="hidden" name="id" value ="<patTemplate:var name="idusuario"/>">
+   <div class="maquetar-formulario">
+     <label for="password">Password:</label>     
+     <input type="password" name="password" id="password" value ="">
+   </div>
+   <div class="maquetar-formulario"> 
+     <label for="passwordold">Repita password:</label>
+     <input type="password" name="password2" id="password2" value ="">
+     <div id="error_validacion_password" class="oculto  js-textoerror_pw js-textoerror">
+                    Ambas password deben ser iguales y no pueden estar vacías
+     </div>
+   </div>
+     <input type="hidden" name="modo" value="usuario_modificado_password">
+     <input type="submit" value ="Modificar password" id="boton-cambiopassword" class="boton-cambiar">
+</form>
+<br>
+<br>
+<br>
+<form method="post" action ="modusuarios.php" class="form-cancelar">
+     <input type="hidden" name="modo" value="listar">
+     <input type="submit" value ="Cancelar" class="boton-cancelar">
+</form>

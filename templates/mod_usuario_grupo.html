@@ -1,0 +1,96 @@
+<script>
+ function borrar_de_grupo(idgruposelementos, nombre){
+           cuadro_dialogo.si_no("Eliminando de grupo...", "El usuario va a ser eliminado del grupo'"+nombre+"'. ¿Desea continuar?",
+	 function(){
+             $("#gruposelementos").val(idgruposelementos);
+             $("#formularioborrado").submit();
+              },
+            function(){
+              // no hay codigo
+               $("#gruposelementos").val(idgruposelementos);
+            });
+            return false;
+     }
+     
+ function agnadir_a_grupo(idusuario) {
+     $("#altaidusuarioengrupo").val(idusuario);
+     var grupo;
+     grupo = $("#idgrupos").val();
+     $("#altaidgrupo").val(grupo);
+     $("#formularioalta").submit();
+ }   
+</script>
+
+<form method="post" action ="modusuarios.php">
+    
+    <h3>  Asignación de grupos del usuario:  <patTemplate:var name="nombreusuario" modifier="html8"/>  </h3>
+    <br>
+    
+    <select name="idtodos" id="idgrupos"/>
+    <patTemplate:tmpl name="combo_todos_los_grupos">  
+    <option value="<patTemplate:var name="idtodos" />"><patTemplate:var name="nombregrupotodos" modifier="html8"/></option>
+    </patTemplate:tmpl>
+    </select>
+    <input type ="hidden" name="idusuario" value="<patTemplate:var name="idusuario" modifier="html8"/>">
+    <input type="hidden"  name="nombreusuario" value = "<patTemplate:var name="nombreusuario" modifier="html8"/>">
+    <br>
+    <input type="button" value="Incluir Usuario en Grupo" onclick="agnadir_a_grupo(<patTemplate:var name="idusuario" modifier="html8"/>)">
+</form>
+
+
+<table>
+
+<tr>
+    <th>
+      &nbsp;
+    </th>
+    <th>
+    <patTemplate:Translate>Grupo</patTemplate:Translate>
+    </th>
+    <th>
+    <patTemplate:Translate>Descripcion</patTemplate:Translate>
+    </th>
+    
+</tr>
+
+<input type="checkbox" name="vehicle" value="Bike">I have a bike<br>
+<patTemplate:tmpl name="usuario_a_grupo">  
+    
+     <tr class="filaListado {ESTILOCSS} <patTemplate:var name="linea"  modifier="html8" /> ">
+     <td width="200"> 
+        <input type="checkbox" name="existe" <patTemplate:var name="perteneceagrupo" modifier="html8"/> value= "<patTemplate:var name="nombre" modifier="html8"/>" > <patTemplate:var name="nombre" modifier="html8"/>
+     </td>
+     <td width="200"> <patTemplate:var name="descripcion"  modifier="html8" /></td> 
+     <td width="80" class="colbtn">
+       <input type="image" src="img/basura1.png" title="Eliminar usuario del grupo" onclick="borrar_de_grupo(<patTemplate:var name="idgruposelementos"  modifier="html8" />,'<patTemplate:var name="nombre"  modifier="html8" />')">
+       </td>   
+    </tr>
+
+</patTemplate:tmpl>
+
+</table>
+
+
+<table>
+
+
+
+<form method="post" action ="modusuarios.php" id="formularioborrado">
+    <input type="hidden" name ="modo" value="eliminar_usuario_del_grupo"/>
+    <input type="hidden" name ="idgruposelementosaborrar" id="gruposelementos" value=""/>
+    <input type ="hidden" name="idusuario" value="<patTemplate:var name="idusuario" modifier="html8"/>">
+    <input type="hidden"  name="nombreusuario" value = "<patTemplate:var name="nombreusuario" modifier="html8"/>">
+ 
+    
+</form>
+
+<form method="post" action ="modusuarios.php" id="formularioalta">
+    <input type="hidden" name ="modo" value="agnadir_grupo_al_usuario"/>
+    <input type="hidden" name ="altaidusuarioengrupo" id="altaidusuarioengrupo" value='<patTemplate:var name="idusuario" modifier="html8"/>'/>
+    <input type="hidden" name ="altaidgrupo" id="altaidgrupo" value='<patTemplate:var name="idusuario" modifier="html8"/>'/>
+    <input type ="hidden" name="idusuario" value="<patTemplate:var name="idusuario" modifier="html8"/>">
+    <input type="hidden"  name="nombreusuario" value = "<patTemplate:var name="nombreusuario" modifier="html8"/>">
+        
+</form>
+
+ <input type="button" value="Volver al usuario">

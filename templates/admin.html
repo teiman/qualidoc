@@ -1,0 +1,135 @@
+<patTemplate:tmpl name="page">
+<!-- admin.html --><html>
+<head>
+
+
+<title>Qualidoc: Panel del administador</title>
+	<patTemplate:tmpl name="headers" src="headers.html" autoload="on" parse="on"/>
+
+
+<script type="text/javascript" src="js/ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="js/ckeditor/adapters/jquery.js"></script>
+
+<script src="js/qquploader/fileuploader.js" type="text/javascript"></script>
+<link href="js/qquploader/fileuploader.css" rel="stylesheet" type="text/css" ></link>
+
+
+<script type="text/javascript">
+	var fecha=new Date();
+	var diames=fecha.getDate();
+	var diasemana=fecha.getDay();
+	var mes=fecha.getMonth() +1 ;
+	var ano=fecha.getFullYear();
+
+	var textosemana = new Array (7);
+	  textosemana[0]="Domingo";
+	  textosemana[1]="Lunes";
+	  textosemana[2]="Martes";
+	  textosemana[3]="Miércoles";
+	  textosemana[4]="Jueves";
+	  textosemana[5]="Viernes";
+	  textosemana[6]="Sábado";
+
+	var textomes = new Array (12);
+	  textomes[1]="Enero";
+	  textomes[2]="Febrero";
+	  textomes[3]="Marzo";
+	  textomes[4]="Abril";
+	  textomes[5]="Mayo";
+	  textomes[6]="Junio";
+	  textomes[7]="Julio";
+	  textomes[7]="Agosto";
+	  textomes[9]="Septiembre";
+	  textomes[10]="Octubre";
+	  textomes[11]="Noviembre";
+	  textomes[12]="Diciembre";
+	  
+	$(function() {
+
+		var textodia = textosemana[diasemana] + ", " + diames + " de " + textomes[mes] + " de " + ano;
+
+		$("#cajafecha").html(textodia);
+		
+
+		if($(".focuseme").length)
+			$(".focuseme").focus();
+
+		if(typeof window.onCarga == 'function') {
+			onCarga();
+		}
+	});
+
+</script>
+
+<!--[if ie]>
+<style type="text/css">
+
+body  {
+	text-align: center;
+}
+
+.navegador {
+	width: 100%;
+}
+
+.headbar {
+ text-align: left;
+}
+
+</style>
+<![endif]-->
+
+<style type='text/css' media='print'>
+
+input {
+	visibility: hidden;
+}
+
+</style>
+<style>
+
+.novedades {
+	margin-top: 20px;
+}
+
+</style>
+</head>
+<body>
+
+
+
+
+<patTemplate:tmpl name="cabeza" src="cabeza.html" autoload="on" parse="on"/>
+
+<patTemplate:tmpl name="headbar" src="headbar.html" autoload="on" parse="on"/>
+
+
+<div class="siderbar">
+<patTemplate:tmpl name="menu" src="menu.html" autoload="on" parse="on"/>
+
+<patTemplate:tmpl name="buscador" src="cajabusqueda.html" autoload="on" parse="on"/>
+
+
+
+</div>
+
+
+
+<div class="cajacontenido" id="cajacontenido">
+
+
+<div class="contenido">
+
+
+<patTemplate:tmpl name="listado" src="vacio.txt" autoload="off" parse="on"/>
+
+
+</div><!-- contenido -->
+</div><!-- cajacontenido -->
+
+<patTemplate:tmpl name="copyright" src="legal.html" autoload="on" parse="off"/>
+
+
+
+</body>
+</html><!-- /admin.html --></patTemplate:tmpl>

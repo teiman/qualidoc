@@ -1,0 +1,42 @@
+
+<patTemplate:tmpl name="listadogrupos">
+<!-- listando grupos (modchecklist_filagrupo.html) -->
+<tr id='trgroup_<patTemplate:var name="id_grupo" default="0"/>' class="tr_principal {CSSGRUPO}">
+    <td width="100" class="colbtn">
+        <button onclick='Listas.editar_grupo_proxy(<patTemplate:var name="id_grupo" default="0"/>)' type="button" class="iconbtn"><img title="Editar grupo" src="img/verde/editar1.png"></button>
+        <button onclick='Listas.borrar_grupo_ui(<patTemplate:var name="id_grupo" default="0"/>)' type="button" class="iconbtn"><img title="Borrar grupo" src="img/basura1.png"></button>
+    </td>
+    <td width="400">
+                    <span id='spangrupo<patTemplate:var name="id_grupo" />' >
+                        <patTemplate:var name="grupo"  modifier="html8" />
+                    </span>
+        <input type="text"  class="oculto nombre-grupo" id='textgrupo<patTemplate:var name="id_grupo"  modifier="html8" />' value='<patTemplate:var name="grupo"  modifier="html8" />'/>
+    </td>
+    <td>
+                    <span id='spanposiciongrupo<patTemplate:var name="id_grupo" />' >
+                        <patTemplate:var name="posicion"  modifier="html8" />
+                    </span>
+        <input type="text" class="oculto js-posicion-grupo" id='textposiciongrupo<patTemplate:var name="id_grupo"  modifier="html8" />' value='<patTemplate:var name="posicion"  modifier="html8" />'/>
+    </td>
+</tr>
+<tr class='trgroup_<patTemplate:var name="id_grupo" default="0"/> tr_nohaypreguntas'>
+    <td colspan="3" class="oculto"> No hay preguntas.</td>
+</tr>
+<tr class='trgroup_<patTemplate:var name="id_grupo" default="0"/>  tr_extra'>
+    <td></td>
+    <td colspan="2" id='preguntas_<patTemplate:var name="id_grupo" modifier="html8"/>'>
+
+    </td>
+</tr>
+<tr class='trgroup_<patTemplate:var name="id_grupo" default="0"/>  tr_toolbar'>
+    <td></td>
+    <td class="">
+        <div class="js-autogen" data-funcion="genpreguntas" data-modo="preguntaseditar" data-param0='<patTemplate:var name="id_grupo" modifier="html8"/>'></div>
+        <hr>
+        <div class="toolbar">
+            <input type ="button" class="boton-generico" value="Añadir pregunta" onclick='Listas.crearPregunta(<patTemplate:var name="id_grupo" default="0"/>)'/>
+        </div>
+    </td>
+</tr>
+<!-- /listando grupos -->
+</patTemplate:tmpl>
